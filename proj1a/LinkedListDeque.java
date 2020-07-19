@@ -18,7 +18,8 @@ public class LinkedListDeque<BleepBlorp> {
         }
 
         // let me read about public vs. private method in a private nested class
-        // a helper method for getRecursive of LinkedListDeque
+        // a helper method for getRecursive of LinkedListDeque.
+        // cannot be static b/c we use the BleepBlorp generic type
         public BleepBlorp getR(int i) {
             IndNode aNode = this;
             if (i == 0) {
@@ -28,7 +29,6 @@ public class LinkedListDeque<BleepBlorp> {
         }
 
     }
-
 
     // constructor for 1 element list
     public LinkedListDeque(BleepBlorp x){
