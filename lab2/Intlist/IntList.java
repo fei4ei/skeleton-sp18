@@ -53,11 +53,12 @@ public class IntList {
         }
         IntList res = new IntList(L.first * L.first, null);
         IntList ptr = res;
+        // FF: res is pointing to the box containing 1 (i.e., res is a pointer stores a memory address for the value of 1 located in the computer memory)
         L = L.rest;
         while (L != null) {
             ptr.rest = new IntList(L.first * L.first, null);
             L = L.rest;
-            ptr = ptr.rest;
+            ptr = ptr.rest; // FF: ptr is now pointing to the next box in the linked list while res still points to the first box of the linked list.
         }
         return res;
     }
@@ -82,31 +83,47 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        IntList C = A;
+        while (C.rest != null) {
+            C = C.rest;
+        }
+        C.rest = B;
+        return A;
     }
 
     /**
      * Returns a list consisting of the elements of A followed by the
-     * * elements of B.  May NOT modify items of A.  Use 'new'.
+     * * elements of B using iteration.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+
+        IntList C = new IntList(A.first, null);
+        IntList D = C;
+        A = A.rest;
+        while (A != null) {
+            D.rest = new IntList(A.first, null);
+            A = A.rest;
+            D = D.rest;
+        }
+        D.rest = B;
+        return C;
     }
 
+    /**
+     * Returns a list consisting of the elements of A followed by the
+     * * elements of B using recursion.  May NOT modify items of A.  Use 'new'.
+     */
+    public static IntList catenateRecursive(IntList A, IntList B) {
+        //TODO:  fill in method
+        // a base case where A.rest == null
+        if (A.rest == null) {
+            return new IntList(A.first, B);
+        }
+        return new IntList(A.first, catenateRecursive(A.rest, B));
 
 
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
     /**

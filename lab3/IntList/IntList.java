@@ -4,18 +4,18 @@ import java.util.Formatter;
  * A naked recursive list of integers, similar to what we saw in lecture 3, but
  * with a large number of additional methods.
  *
- * @author P. N. Hilfinger, with some modifications by Josh Hug and melaniecebula
- *         [Do not modify this file.]
+ * @author P. N. Hilfinger, with some modifications by Josh Hug and
+ * melaniecebula [Do not modify this file.]
  */
 public class IntList {
     /**
      * First element of list.
      */
-    public int first;
+    int first;
     /**
      * Remaining elements of list.
      */
-    public IntList rest;
+    IntList rest;
 
     /**
      * A List with first FIRST0 and rest REST0.
@@ -52,13 +52,23 @@ public class IntList {
             return null;
         }
         IntList res = new IntList(L.first * L.first, null);
+
+        /* FF: res is pointing to the box containing 1
+         * (i.e., res is a pointer stores a memory address for
+         * the value of 1 located in the computer memory)
+         */
         IntList ptr = res;
-        // FF: res is pointing to the box containing 1 (i.e., res is a pointer stores a memory address for the value of 1 located in the computer memory)
+
         L = L.rest;
         while (L != null) {
             ptr.rest = new IntList(L.first * L.first, null);
             L = L.rest;
-            ptr = ptr.rest; // FF: ptr is now pointing to the next box in the linked list while res still points to the first box of the linked list.
+            /* FF: ptr is now pointing to the next box in
+            the linked list while res still points to the
+            first box of the linked list.
+             */
+            ptr = ptr.rest;
+
         }
         return res;
     }
@@ -112,7 +122,9 @@ public class IntList {
      * * elements of B using recursion.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenateRecursive(IntList A, IntList B) {
-        // a base case where A.rest == null
+        /** a base case where A.rest == null
+         *
+         */
         if (A.rest == null) {
             return new IntList(A.first, B);
         }
@@ -129,10 +141,9 @@ public class IntList {
         if (this.rest == null) {
             return 1;
         }
-        return 1+this.rest.size();
+        return 1 + this.rest.size();
     }
-
-    // get the ith element of the linked list
+    /** get the ith element of the linked list */
     public int get(int i) {
         int num = 0;
         IntList p = this;
@@ -143,6 +154,7 @@ public class IntList {
         return p.first;
     }
 
+    /** return the ith node of the linked list */
     public IntList getNode(int i) {
         int num = 0;
         IntList p = this;
@@ -153,9 +165,10 @@ public class IntList {
         return p;
     }
 
+    /** return a reversed linked list: (1,2,3) becomes (3,2,1) */
     public static IntList reverse(IntList A) {
 
-        // base case
+        /* base case */
         if (A == null) {
             return null;
         }
@@ -163,18 +176,17 @@ public class IntList {
         if (currentSize == 1) {
             return A;
         }
-        // iteration
+        /* iteration */
         IntList first = A;
         IntList justAdded = null;
-        IntList last = A.getNode(currentSize-1);
-        IntList secondtoLast = A.getNode(currentSize-2);
+        IntList last = A.getNode(currentSize - 1);
+        IntList secondtoLast = A.getNode(currentSize - 2);
         for (int i = 1; i < currentSize; i++) {
             secondtoLast.rest = null;
             last.rest = first;
             if (i == 1) {
                 A = last;
-            }
-            else {
+            } else {
                 justAdded.rest = last;
             }
             justAdded = last;
