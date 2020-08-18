@@ -28,6 +28,17 @@ public class TestPalindrome {
     }
 
     @Test
+    public void testisPalindromeR() {
+        assertFalse(palindrome.isPalindromeR("cat"));
+        assertTrue(palindrome.isPalindromeR("c"));
+        assertTrue(palindrome.isPalindromeR(""));
+        assertTrue(palindrome.isPalindromeR("deed"));
+        assertFalse(palindrome.isPalindromeR("does"));
+        assertTrue(palindrome.isPalindromeR("tenet"));
+        assertFalse(palindrome.isPalindromeR("tenis"));
+    }
+
+    @Test
     public void testIsPalindrome() {
         CharacterComparator offByOne = new OffByOne();
         assertTrue(palindrome.isPalindrome("flake", offByOne));

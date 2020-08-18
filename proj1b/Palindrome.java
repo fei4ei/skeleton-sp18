@@ -14,6 +14,12 @@ public class Palindrome {
         return temp;
     }
 
+    /** The isPalindrome method should return true if the given word is a palindrome,
+     * and false otherwise. A palindrome is defined as a word that is the same whether
+     * it is read forwards or backwards. This method uses iteration.
+     * @param word
+     * @return
+     */
     public boolean isPalindrome(String word) {
         Deque<Character> myDeque = wordToDeque(word);
         // if word.length = 1 or 0, (int) word.length()/2.0 = 0
@@ -26,6 +32,34 @@ public class Palindrome {
             }
         }
         return true;
+    }
+
+    /** The private isPalindrome helper method should return true if the given word is a palindrome,
+     * and false otherwise. A palindrome is defined as a word that is the same whether
+     * it is read forwards or backwards. This method uses recursion.
+     * @param myDeque
+     * @return
+     */
+
+    private boolean isPalindromeRP(Deque<Character> myDeque) {
+        // base case
+        if ((myDeque.size() == 1) || (myDeque.size() == 0)) {
+            return true;
+        }
+
+        // Setting up the recursion
+        Character front = myDeque.removeFirst();
+        Character back = myDeque.removeLast();
+        if (front != back) {
+            return false;
+        } else {
+            return isPalindromeRP(myDeque);
+        }
+    }
+
+    public boolean isPalindromeR(String word) {
+        Deque<Character> myDeque = wordToDeque(word);
+        return isPalindromeRP(myDeque);
     }
 
     public boolean isPalindrome(String word, CharacterComparator cc) {
