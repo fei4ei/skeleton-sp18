@@ -13,10 +13,16 @@ public class TestArrayRingBuffer {
         arb.enqueue(5);
         arb.enqueue(10);
         arb.enqueue(15);
+
+
         Integer expected = 5;
         assertEquals(expected, arb.dequeue());
         assertEquals((Integer) 10, arb.dequeue());
         assertEquals((Integer) 15, arb.dequeue());
+
+        for (Integer a : arb) {
+            System.out.println(a);
+        }
     }
 
     /** Calls tests for ArrayRingBuffer. */
