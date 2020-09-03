@@ -18,7 +18,8 @@ public class HexWorld {
     private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
 
-    /** add a hexagon of side length
+    /** Add a hexagon of side length. Only part of the hexagon with x between [0, WIDTH)
+     * and y between [0, HEIGHT) will be depicted
      * @param sideLength: number of tiles for each side.
      * @param cornerX and cornerY: X and Y axis of the tile at the left top corner.
      */
@@ -26,7 +27,7 @@ public class HexWorld {
         // top half. assuming x axis points to the right and y axis points downward
         for (int y = 0; y < sideLength; y++) {
             for (int x = 0; x < sideLength + 2*y; x++) {
-                if (cornerX - y + x < 0 || cornerX - y + x >= WIDTH || cornerY + y >= HEIGHT) {
+                if (cornerX - y + x < 0 || cornerX - y + x >= WIDTH || cornerY + y < 0 || cornerY + y >= HEIGHT) {
                     continue;
                 }
                 tiles[cornerX - y + x][cornerY + y] = t;
