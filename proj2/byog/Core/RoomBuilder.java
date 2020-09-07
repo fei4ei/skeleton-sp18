@@ -4,6 +4,7 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -15,10 +16,33 @@ public class RoomBuilder {
     private static final int HEIGHT = 40;
     private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
-    // public static HashSet FloorsCoord = new HashSet();
     public static int[] currPos = {20,20};
     public static int[] lastPos = {25,25};
 
+
+    /**
+     *
+     * @param tiles
+     */
+    public static void WallBuilder(TETile[][] tiles, int WIDTH, int HEIGHT) {
+        for (int x = 2; x < WIDTH-2; x++) {
+            for (int y = 2; y < HEIGHT-2; y++) {
+                if (tiles[x][y] == Tileset.FLOOR) {
+                    wallbuilder(tiles, x, y);
+                }
+            }
+        }
+    }
+
+    private static void wallbuilder(TETile[][] tiles, int x, int y) {
+        for (int i = x-1; i<= x+1; i++) {
+            for (int j = y-1; j <= y+1; j++) {
+                if (tiles[i][j] == Tileset.NOTHING) {
+                    tiles[i][j] = Tileset.WALL;
+                }
+            }
+        }
+    }
 
 
     /** This method will build one room or hallway of rectangular shape
@@ -29,7 +53,7 @@ public class RoomBuilder {
      * @param pos: x,y coordinates of the left top corner (assuming x axis points to the right)
      *
      */
-    private static void RoomBuilder(TETile[][] tiles, int sideWidth, int sideHeight, int[] pos) {
+    public static void RoomBuilder(TETile[][] tiles, int sideWidth, int sideHeight, int[] pos) {
         // build the floor within the room and/or hallway
         for (int y = 1; y < sideHeight-1; y++) {
             for (int x = 1; x < sideWidth-1; x++) {
@@ -40,6 +64,7 @@ public class RoomBuilder {
             }
         }
 
+        /**
         // build the wall surrounding the room and/or hallway.
         // TODO: ensure x,y coordiates of walls are between 0-WIDTH for x and 0-HEIGHT for y
         for (int x = 0; x < sideWidth; x++) {
@@ -68,6 +93,7 @@ public class RoomBuilder {
             }
             tiles[pos[0] + sideWidth - 1][pos[1] + y] = Tileset.WALL;
         }
+         */
     }
 
     public static void RandomRooms(TETile[][] tiles) {
@@ -77,6 +103,7 @@ public class RoomBuilder {
         RoomBuilder(tiles, sidewidth, sideheight, currPos);
     }
 
+    // TODO: ensure x,y coordiates of walls are between 0-WIDTH for x and 0-HEIGHT for y
     private static void RoomConnector(TETile[][] tiles, int[] lastPos, int[] Pos) {
         if (lastPos.equals(Pos)) {
             return;
@@ -91,6 +118,8 @@ public class RoomBuilder {
         for (int x = 0; x < maxX - minX + 1; x++) {
             tiles[minX + x + 1][Pos[1]] = Tileset.FLOOR;
         }
+
+        /**
         if (tiles[minX][Pos[1]]!=Tileset.FLOOR) {
             tiles[minX][Pos[1]] = Tileset.WALL;
         }
@@ -110,6 +139,7 @@ public class RoomBuilder {
             }
             tiles[minX + x + 1][Pos[1] + 1] = Tileset.WALL;
         }
+         */
 
 
         //draw a vertical floor, sandwiched by walls
@@ -120,6 +150,7 @@ public class RoomBuilder {
             tiles[lastPos[0] + 1][minY + y] = Tileset.FLOOR;
         }
 
+        /**
         if (tiles[lastPos[0] + 1][minY - 1] != Tileset.FLOOR) {
             tiles[lastPos[0] + 1][minY - 1] = Tileset.WALL;
         }
@@ -140,6 +171,7 @@ public class RoomBuilder {
             }
             tiles[lastPos[0] + 2][minY + y] = Tileset.WALL;
         }
+         */
     }
 
     public static void main(String[] args) {
@@ -168,7 +200,7 @@ public class RoomBuilder {
         RoomBuilder(Tiles, 5, 5, currPos);
         */
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             lastPos[0] = currPos[0];
             lastPos[1] = currPos[1];
             currPos[0] = RANDOM.nextInt(55);
@@ -206,7 +238,7 @@ public class RoomBuilder {
         int[] Pos5 = {30, 35};
         RoomConnector(Tiles, lastPos5, Pos5);
          */
-
+        WallBuilder(Tiles, WIDTH, HEIGHT);
         ter.renderFrame(Tiles);
     }
 }
