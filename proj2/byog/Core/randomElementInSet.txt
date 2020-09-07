@@ -1,0 +1,11 @@
+    public static int[] RandomElement(HashSet<int[]> positions) {
+        int size = positions.size();
+        int item = new Random().nextInt(size); // In real life, the Random object should be rather more shared than this
+        int i = 0;
+        for(int[] pos : positions) {
+            if (i == item) {
+                return pos;
+            }
+            i++;
+        } return null;
+    }
