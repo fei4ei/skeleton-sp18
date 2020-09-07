@@ -4,7 +4,12 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.lang.reflect.WildcardType;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+
+import static edu.princeton.cs.algs4.StdDraw.setCanvasSize;
 
 public class RoomBuilder {
     private static final int WIDTH = 60;
