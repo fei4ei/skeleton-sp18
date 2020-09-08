@@ -9,11 +9,11 @@ import java.util.Random;
 
 public class RoomBuilder {
     private static final int WIDTH = 60;
-    private static final int HEIGHT = 40;
+    private static final int HEIGHT = 38;
     private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
-    public static int[] currPos = {6,6};
-    public static int[] lastPos = {6,6};
+    public static int[] currPos = {20,36};
+    public static int[] lastPos = {20,20};
 
     /**
      *
@@ -64,12 +64,13 @@ public class RoomBuilder {
     }
 
     public static void RandomRooms(TETile[][] tiles) {
-        int sidewidth = RANDOM.nextInt(5)+1;
-        int sideheight = RANDOM.nextInt(5)+1;
+        int sidewidth = RANDOM.nextInt(8)+1;
+        int sideheight = RANDOM.nextInt(8)+1;
 
         RoomBuilder(tiles, sidewidth, sideheight, currPos);
     }
 
+    // TODO: ensure x,y coordiates of walls are between 0-WIDTH for x and 0-HEIGHT for y
     public static void RoomConnector(TETile[][] tiles, int[] lastPos, int[] Pos) {
         if (lastPos.equals(Pos)) {
             return;
@@ -80,50 +81,15 @@ public class RoomBuilder {
         int minY = Math.min(lastPos[1], Pos[1]);
         int maxY = Math.max(lastPos[1], Pos[1]);
 
-        // draw a horizontal floor
+        // draw a horizontal floor, sandwiched by walls
         for (int x = 0; x < maxX - minX + 1; x++) {
             tiles[(minX + x) % (WIDTH - 2) + 1][Pos[1] % (HEIGHT - 2) + 1] = Tileset.FLOOR;
         }
 
-        //draw a vertical floor
+        //draw a vertical floor, sandwiched by walls
         for (int y = 0; y < maxY - minY + 1; y++) {
             tiles[lastPos[0] % (WIDTH - 2) + 1][(minY + y) % (HEIGHT - 2) + 1] = Tileset.FLOOR;
         }
-    }
-
-    // 0: up; 1: down; 2: right; 3: left
-    public static int Direction(int[] Pos) {
-        if (Pos[0] <= WIDTH/2.0 && Pos[1] <= HEIGHT/2.0) {
-            return 0;
-        } else if (Pos[0] <= WIDTH/2.0 && Pos[1] > HEIGHT/2.0){
-            return 2;
-        } else if (Pos[1] > HEIGHT/2.0) {
-            return 1;
-        } else {
-            return 3;
-        }
-    }
-
-    public static int[] NextPos(int[] Pos) {
-        if (Direction(Pos) == 0) {
-            return new int[]{Pos[0] + RANDOM.nextInt(2) - 1, Pos[1] + RANDOM.nextInt(5)};
-        } else if (Direction(Pos) == 1) {
-            return new int[]{Pos[0] + RANDOM.nextInt(2) - 1, Pos[1] - RANDOM.nextInt(5)};
-        } else if (Direction(Pos) == 2) {
-            return new int[]{Pos[0] + RANDOM.nextInt(5), Pos[1] + RANDOM.nextInt(2) - 1};
-        } else if (Direction(Pos) == 3) {
-            return new int[]{Pos[0] - RANDOM.nextInt(5), Pos[1] + RANDOM.nextInt(2) - 1};
-        } else {
-            return null;
-        }
-    }
-
-    public static int NextCoord(int x, int boundX) {
-        int item = x + RANDOM.nextInt(5);
-        while (item > boundX - 6 || item < 6) {
-            item = x + RANDOM.nextInt(5);
-        }
-        return item;
     }
 
     public static void main(String[] args) {
@@ -138,35 +104,11 @@ public class RoomBuilder {
             }
         }
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 26; i++) {
             lastPos[0] = currPos[0];
             lastPos[1] = currPos[1];
-            // currPos[0] = currPos[0] + RANDOM.nextInt(10);
-            // currPos[1] = currPos[1] + RANDOM.nextInt(10);
-            currPos = NextPos(currPos);
-            RandomRooms(Tiles);
-            RoomConnector(Tiles, lastPos, currPos);
-        }
-
-        currPos[0] = 8;
-        currPos[1] = 32;
-        RoomConnector(Tiles, lastPos, currPos);
-        for (int i = 0; i < 20; i++) {
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
-            currPos = NextPos(currPos);
-            RandomRooms(Tiles);
-            RoomConnector(Tiles, lastPos, currPos);
-        }
-
-
-        currPos[0] = 52;
-        currPos[1] = 11;
-        RoomConnector(Tiles, lastPos, currPos);
-        for (int i = 0; i < 20; i++) {
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
-            currPos = NextPos(currPos);
+            currPos[0] = lastPos[0] + RANDOM.nextInt(5);
+            currPos[1] = lastPos[1] + RANDOM.nextInt(5);
             RandomRooms(Tiles);
             RoomConnector(Tiles, lastPos, currPos);
         }
