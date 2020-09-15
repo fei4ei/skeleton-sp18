@@ -3,6 +3,7 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import byog.lab5.HexWorld;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -10,8 +11,8 @@ import java.util.Random;
 public class RoomBuilder1 {
     TERenderer ter;
     TETile[][] Tiles;
-    private static long SEED = 2873123;
-    private static Random RANDOM = new Random(SEED);
+    private static final long SEED = 2873123;
+    private static final Random RANDOM = new Random(SEED);
     private static final int WIDTH = 60;
     private static final int HEIGHT = 40;
     private static int width; // width and heights are measurements of the inner bound.
@@ -115,23 +116,6 @@ public class RoomBuilder1 {
         }
     }
 
-public RoomBuilder1(long seed) {
-        Random RANDOM = new Random(seed);
-        SEED = seed;
-        ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-        width = WIDTH - 6;
-        height = HEIGHT - 6;
-
-        Tiles = new TETile[WIDTH][HEIGHT];
-
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                Tiles[x][y] = Tileset.NOTHING;
-            }
-        }
-}
-
     public static void main(String[] args) {
         RoomBuilder1 rb = new RoomBuilder1();
         int num = 20;
@@ -143,10 +127,10 @@ public RoomBuilder1(long seed) {
         for (int i = 1; i < num; i++) {
             int[] lastPos = {x[i - 1], y[i - 1]};
             int[] currPos = {x[i], y[i]};
-            PointConnector(rb.Tiles, lastPos, currPos);
+            rb.PointConnector(rb.Tiles, lastPos, currPos);
             int sideH = RANDOM.nextInt(5)+1;
             int sideW = RANDOM.nextInt(5)+1;
-            RoomBuilder(rb.Tiles, sideH, sideW, currPos);
+            rb.RoomBuilder(rb.Tiles, sideH, sideW, currPos);
         }
 
         /**

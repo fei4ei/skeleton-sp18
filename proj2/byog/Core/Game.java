@@ -2,13 +2,22 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import java.util.Random;
+import java.util.Arrays;
+
+import static byog.Core.RoomBuilder1.WallBuilder;
+import static byog.Core.RoomBuilder1.PointConnector;
+import static byog.Core.RoomBuilder1.RoomBuilder;
+import static byog.Core.RoomBuilder1.randomX;
+import static byog.Core.RoomBuilder1.randomY;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
-
+    private static final int WIDTH = 60;
+    private static final int HEIGHT = 40;
+    private static int width = 54;
+    private static int height = 34;
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -31,12 +40,34 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-        char first = input.charAt(0);
-        char last = input.charAt(input.length()-1);
+        // char first = input.charAt(0);
+        // char last = input.charAt(input.length()-1);
         String seednum = input.substring(1,input.length()-1);
-        int i = Integer.parseInt(seednum);
+        int seedNUM = Integer.parseInt(seednum);
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        RoomBuilder1 rb = new RoomBuilder1(seedNUM);
+        Random RANDOM = new Random(seedNUM);
+        int num = 20;
+        int[] x = randomX(width, num);
+        int[] y = randomY(height, num);
+
+        for (int i = 1; i < num; i++) {
+            int[] lastPos = {x[i - 1], y[i - 1]};
+            int[] currPos = {x[i], y[i]};
+            PointConnector(rb.Tiles, lastPos, currPos);
+            int sideH = RANDOM.nextInt(5)+1;
+            int sideW = RANDOM.nextInt(5)+1;
+            RoomBuilder(rb.Tiles, sideH, sideW, currPos);
+        }
+
+        WallBuilder(rb.Tiles, WIDTH, HEIGHT);
+        rb.ter.renderFrame(rb.Tiles);
+        return rb.Tiles;
+    }
+
+    public static void main(String[] args) {
+        Game game = new Game();
+        TETile[][] world = game.playWithInputString("N2366S");
+        TETile[][] world1 = game.playWithInputString("N2367S");
     }
 }
