@@ -31,6 +31,10 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
+        char first = input.charAt(0);
+        char last = input.charAt(input.length()-1);
+        String seednum = input.substring(1,input.length()-1);
+        int i = Integer.parseInt(seednum);
 
         TETile[][] finalWorldFrame = null;
         return finalWorldFrame;
