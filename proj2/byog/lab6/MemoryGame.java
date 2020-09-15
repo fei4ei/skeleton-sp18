@@ -9,6 +9,7 @@ import java.util.Random;
 public class MemoryGame {
     private int width;
     private int height;
+    private int seed;
     private int round;
     private Random rand;
     private boolean gameOver;
@@ -25,16 +26,23 @@ public class MemoryGame {
         }
 
         int seed = Integer.parseInt(args[0]);
-        MemoryGame game = new MemoryGame(40, 40);
-        game.startGame();
+        // Random RANDOM = new Random(seed);
+        MemoryGame game = new MemoryGame(seed, 30, 30);
+        // game.startGame();
+        String astr = game.generateRandomString(4);
+        System.out.println(astr);
+        // game.drawFrame(astr);
+        game.flashSequence(astr);
+
     }
 
-    public MemoryGame(int width, int height) {
+    public MemoryGame(int SEED, int width, int height) {
         /* Sets up StdDraw so that it has a width by height grid of 16 by 16 squares as its canvas
          * Also sets up the scale so the top left is (0,0) and the bottom right is (width, height)
          */
         this.width = width;
         this.height = height;
+        this.seed = SEED;
         StdDraw.setCanvasSize(this.width * 16, this.height * 16);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -44,20 +52,43 @@ public class MemoryGame {
         StdDraw.enableDoubleBuffering();
 
         //TODO: Initialize random number generator
+        Random RANDOM = new Random(SEED);
     }
 
     public String generateRandomString(int n) {
         //TODO: Generate random string of letters of length n
-        return null;
+        StringBuilder returnstr = new StringBuilder();
+        Random RANDOM = new Random(seed);
+        for (int i = 0; i < n; i++) {
+            int index = RANDOM.nextInt(26);
+            char temp = CHARACTERS[index];
+            returnstr.append(temp);
+        }
+        return returnstr.toString();
     }
 
     public void drawFrame(String s) {
         //TODO: Take the string and display it in the center of the screen
         //TODO: If game is not over, display relevant game information at the top of the screen
+        StdDraw.clear(Color.BLACK);
+        StdDraw.enableDoubleBuffering();
+        Font myfont = new Font("Arial", Font.BOLD, 60);
+        StdDraw.setFont(myfont);
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.text((int) this.width/2.0, (int) this.height/2.0, s);
+        StdDraw.show();
+        // need to implement the display of game information on top
     }
 
     public void flashSequence(String letters) {
         //TODO: Display each character in letters, making sure to blank the screen between letters
+        for (int i = 0; i < letters.length(); i++) {
+            String sub = letters.substring(i,i+1);
+            drawFrame(sub); // how to adjust the display time?
+            StdDraw.pause(2000); // pause for 500 milliseconds
+            drawFrame(" ");
+            StdDraw.pause(500);
+        }
     }
 
     public String solicitNCharsInput(int n) {

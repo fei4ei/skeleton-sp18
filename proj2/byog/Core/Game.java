@@ -42,6 +42,7 @@ public class Game {
         // drawn if the same inputs had been given to playWithKeyboard().
         // char first = input.charAt(0);
         // char last = input.charAt(input.length()-1);
+        // substring [beginning, ending)
         String seednum = input.substring(1,input.length()-1);
         int seedNUM = Integer.parseInt(seednum);
 
