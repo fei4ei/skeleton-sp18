@@ -28,12 +28,17 @@ public class MemoryGame {
         int seed = Integer.parseInt(args[0]);
         // Random RANDOM = new Random(seed);
         MemoryGame game = new MemoryGame(seed, 30, 30);
-        // game.startGame();
+        game.startGame();
+
+        /** // The following codes are for debugging
         String astr = game.generateRandomString(4);
         System.out.println(astr);
-        // game.drawFrame(astr);
+        game.drawFrame(astr);
+        StdDraw.pause(1000);
         game.flashSequence(astr);
-
+        String Userinput = game.solicitNCharsInput(4);
+        System.out.println(Userinput);
+         */
     }
 
     public MemoryGame(int SEED, int width, int height) {
@@ -52,7 +57,7 @@ public class MemoryGame {
         StdDraw.enableDoubleBuffering();
 
         //TODO: Initialize random number generator
-        Random RANDOM = new Random(SEED);
+        this.rand = new Random(SEED);
     }
 
     public String generateRandomString(int n) {
@@ -85,7 +90,7 @@ public class MemoryGame {
         for (int i = 0; i < letters.length(); i++) {
             String sub = letters.substring(i,i+1);
             drawFrame(sub); // how to adjust the display time?
-            StdDraw.pause(2000); // pause for 500 milliseconds
+            StdDraw.pause(1000); // pause for 500 milliseconds
             drawFrame(" ");
             StdDraw.pause(500);
         }
@@ -93,13 +98,58 @@ public class MemoryGame {
 
     public String solicitNCharsInput(int n) {
         //TODO: Read n letters of player input
-        return null;
+
+        StringBuilder returnStr = new StringBuilder();
+        while (returnStr.length() < n) { // cannot use for loop here
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char next = StdDraw.nextKeyTyped(); // nextKeyTyped() returns the key as a char
+            returnStr.append(next);
+            drawFrame(returnStr.toString());
+        }
+        return returnStr.toString();
+
+
+        // The following is taken from the answer key
+        /**
+        String input = "";
+        drawFrame(input);
+
+        while (input.length() < n) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char key = StdDraw.nextKeyTyped();
+            input += String.valueOf(key);
+            drawFrame(input);
+        }
+        StdDraw.pause(500);
+        return input;
+         */
     }
 
     public void startGame() {
         //TODO: Set any relevant variables before the game starts
+        this.round = 1;
+        this.gameOver = false;
+        this.playerTurn = false;
 
         //TODO: Establish Game loop
+        while (this.gameOver == false) {
+            this.drawFrame("Round: "+round);
+            StdDraw.pause(500);
+            String target = this.generateRandomString(round);
+            this.flashSequence(target);
+            String actual = this.solicitNCharsInput(round);
+            if (!actual.equals(target)) {
+                this.gameOver = true;
+                this.drawFrame("Game Over! You made it to round: "+round);
+                continue;
+            }
+            this.drawFrame(ENCOURAGEMENT[round % 7]);
+            this.round += 1;
+        }
     }
 
 }
