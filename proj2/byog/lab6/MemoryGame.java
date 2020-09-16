@@ -81,6 +81,18 @@ public class MemoryGame {
         StdDraw.setFont(myfont);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.text((int) this.width/2.0, (int) this.height/2.0, s);
+
+        Font topfont = new Font("Arial", Font.ITALIC, 20);
+        StdDraw.setFont(topfont);
+        StdDraw.setPenColor(StdDraw.YELLOW);
+        String WoT;
+        if (playerTurn == false) {
+            WoT = "Watch";
+        } else {
+            WoT = "Type";
+        }
+        StdDraw.text((int) this.width/2.0, this.height-1, WoT);
+
         StdDraw.show();
         // need to implement the display of game information on top
     }
@@ -96,6 +108,7 @@ public class MemoryGame {
         }
     }
 
+    // StdDraw library cannot handle backspace to remove the last character entered
     public String solicitNCharsInput(int n) {
         //TODO: Read n letters of player input
 
@@ -138,17 +151,23 @@ public class MemoryGame {
         //TODO: Establish Game loop
         while (this.gameOver == false) {
             this.drawFrame("Round: "+round);
-            StdDraw.pause(500);
+            StdDraw.pause(1000);
             String target = this.generateRandomString(round);
             this.flashSequence(target);
+
+            this.playerTurn = true;
+            this.drawFrame(" ");
             String actual = this.solicitNCharsInput(round);
             if (!actual.equals(target)) {
                 this.gameOver = true;
-                this.drawFrame("Game Over! You made it to round: "+round);
+                String print = "Game Over! \n You made it to round: " + round;
+                this.drawFrame(print);
                 continue;
             }
             this.drawFrame(ENCOURAGEMENT[round % 7]);
+            StdDraw.pause(1000);
             this.round += 1;
+            this.playerTurn = false;
         }
     }
 
