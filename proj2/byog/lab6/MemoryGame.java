@@ -27,7 +27,7 @@ public class MemoryGame {
 
         int seed = Integer.parseInt(args[0]);
         // Random RANDOM = new Random(seed);
-        MemoryGame game = new MemoryGame(seed, 30, 30);
+        MemoryGame game = new MemoryGame(seed, 50, 30);
         game.startGame();
 
         /** // The following codes are for debugging
@@ -77,12 +77,12 @@ public class MemoryGame {
         //TODO: If game is not over, display relevant game information at the top of the screen
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
-        Font myfont = new Font("Arial", Font.BOLD, 60);
+        Font myfont = new Font("Arial", Font.BOLD, 40);
         StdDraw.setFont(myfont);
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.text((int) this.width/2.0, (int) this.height/2.0, s);
 
-        Font topfont = new Font("Arial", Font.ITALIC, 20);
+        Font topfont = new Font("Arial", Font.ITALIC, 30);
         StdDraw.setFont(topfont);
         StdDraw.setPenColor(StdDraw.YELLOW);
         String WoT;
@@ -91,7 +91,10 @@ public class MemoryGame {
         } else {
             WoT = "Type";
         }
-        StdDraw.text((int) this.width/2.0, this.height-1, WoT);
+        StdDraw.text((int) this.width/2.0 - 2, this.height-1, WoT);
+        StdDraw.text(5, this.height-1, "Round: " + String.valueOf(this.round));
+        StdDraw.text(this.width-10, this.height-1, ENCOURAGEMENT[this.round % 7]);
+        StdDraw.line(0, this.height-2, this.width, this.height-2);
 
         StdDraw.show();
         // need to implement the display of game information on top
