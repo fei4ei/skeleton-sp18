@@ -2,6 +2,9 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
+
 import java.util.Random;
 import java.util.Arrays;
 
@@ -18,6 +21,46 @@ public class Game {
     private static final int HEIGHT = 40;
     private static int width = 54;
     private static int height = 34;
+
+
+    public String CharsInput() {
+        //TODO: Read n letters of player input
+        StringBuilder returnStr = new StringBuilder();
+        while (true) { // cannot use for loop here
+            if (!StdDraw.hasNextKeyTyped()) {
+                break;
+            }
+            char next = StdDraw.nextKeyTyped(); // nextKeyTyped() returns the key as a char
+            returnStr.append(next);
+        }
+        return returnStr.toString();
+    }
+
+    public static void interactivePlay(TETile[][] tiles, int[] pos, String movement, TERenderer ter) {
+        // create a player
+        int[] currPos = {pos[0], pos[1]};
+        int[] lastPos = {pos[0], pos[1]};
+        tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
+        for (int i = 0; i < movement.length(); i++) {
+            if (movement.charAt(i) == 'w') {
+                currPos[1] = (currPos[1] + 1) % 40;
+            } else if (movement.charAt(i) == 's') {
+                currPos[1] = (currPos[1] - 1) % 40;
+            } else if (movement.charAt(i) == 'a') {
+                currPos[0] = (currPos[0] - 1) % 40;
+            } else if (movement.charAt(i) == 'd') {
+                currPos[0] = (currPos[0] + 1) % 40;
+            }
+            tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
+            tiles[lastPos[0]][lastPos[1]] = Tileset.FLOOR;
+            ter.renderFrame(tiles);
+            StdDraw.pause(1000);
+            lastPos[0] = currPos[0];
+            lastPos[1] = currPos[1];
+        }
+    }
+
+
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -36,6 +79,7 @@ public class Game {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
+
     public TETile[][] playWithInputString(String input) {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
@@ -69,6 +113,6 @@ public class Game {
     public static void main(String[] args) {
         Game game = new Game();
         TETile[][] world = game.playWithInputString("N2366S");
-        TETile[][] world1 = game.playWithInputString("N2367S");
+
     }
 }

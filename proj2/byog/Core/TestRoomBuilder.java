@@ -31,6 +31,7 @@ public class TestRoomBuilder {
             }
         }
 
+        /*
         int[] currPos = {3,7};
         int[] lastPos = {7,3};
         RoomBuilder1.PointConnector(Tiles, lastPos, currPos);
@@ -38,6 +39,11 @@ public class TestRoomBuilder {
         int[] currPos1 = {18,14};
         int[] lastPos1 = {14,18};
         RoomBuilder1.PointConnector(Tiles, lastPos1, currPos1);
+
+         */
+        int[] pos = {9,9};
+        String dir = "wddssa";
+        Game.interactivePlay(Tiles, pos, dir, ter);
 
         ter.renderFrame(Tiles);
     }
