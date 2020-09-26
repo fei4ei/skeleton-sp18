@@ -123,13 +123,12 @@ public class Game {
         }
 
         WallBuilder(rb.Tiles, WIDTH, HEIGHT);
-        rb.ter.renderFrame(rb.Tiles);
+//        rb.ter.renderFrame(rb.Tiles);
         return rb.Tiles;
     }
 
     public static void main(String[] args) {
         Game game = new Game();
         TETile[][] world = game.playWithInputString("N2366S");
-
     }
 }
