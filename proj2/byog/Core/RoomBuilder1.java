@@ -102,7 +102,7 @@ public class RoomBuilder1 {
 
     public RoomBuilder1() {
         ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+//        ter.initialize(WIDTH, HEIGHT);
         width = WIDTH - 6;
         height = HEIGHT - 6;
 
@@ -119,7 +119,7 @@ public RoomBuilder1(long seed) {
         Random RANDOM = new Random(seed);
         SEED = seed;
         ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+//        ter.initialize(WIDTH, HEIGHT);
         width = WIDTH - 6;
         height = HEIGHT - 6;
 
