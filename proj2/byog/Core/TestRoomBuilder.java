@@ -43,8 +43,11 @@ public class TestRoomBuilder {
          */
         int[] pos = {9,9};
         String dir = "wddssa";
-        Game.interactivePlay(Tiles, pos, dir, ter);
-
+        // Game.stringPlay(Tiles, pos, dir, ter);
+        Game.interactivePlay(Tiles, pos, ter);
         ter.renderFrame(Tiles);
+
+
+
     }
 }

@@ -23,20 +23,7 @@ public class Game {
     private static int height = 34;
 
 
-    public String CharsInput() {
-        //TODO: Read n letters of player input
-        StringBuilder returnStr = new StringBuilder();
-        while (true) { // cannot use for loop here
-            if (!StdDraw.hasNextKeyTyped()) {
-                break;
-            }
-            char next = StdDraw.nextKeyTyped(); // nextKeyTyped() returns the key as a char
-            returnStr.append(next);
-        }
-        return returnStr.toString();
-    }
-
-    public static void interactivePlay(TETile[][] tiles, int[] pos, String movement, TERenderer ter) {
+    public static void stringPlay(TETile[][] tiles, int[] pos, String movement, TERenderer ter) {
         // create a player
         int[] currPos = {pos[0], pos[1]};
         int[] lastPos = {pos[0], pos[1]};
@@ -57,6 +44,35 @@ public class Game {
             StdDraw.pause(1000);
             lastPos[0] = currPos[0];
             lastPos[1] = currPos[1];
+        }
+    }
+
+    public static void interactivePlay(TETile[][] tiles, int[] pos, TERenderer ter) {
+        int[] currPos = {pos[0], pos[1]};
+        int[] lastPos = {pos[0], pos[1]};
+        tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
+        ter.renderFrame(tiles);
+
+        char next = ' ';
+        while (next != 'q') {
+            if (StdDraw.hasNextKeyTyped()) {
+                next = StdDraw.nextKeyTyped();
+                if (next == 'w') {
+                    currPos[1] = (currPos[1] + 1) % 40;
+                } else if (next == 's') {
+                    currPos[1] = (currPos[1] - 1) % 40;
+                } else if (next == 'a') {
+                    currPos[0] = (currPos[0] - 1) % 40;
+                } else if (next == 'd') {
+                    currPos[0] = (currPos[0] + 1) % 40;
+                }
+                tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
+                tiles[lastPos[0]][lastPos[1]] = Tileset.FLOOR;
+                ter.renderFrame(tiles);
+                StdDraw.pause(1000);
+                lastPos[0] = currPos[0];
+                lastPos[1] = currPos[1];
+            }
         }
     }
 
@@ -88,7 +104,8 @@ public class Game {
         // char last = input.charAt(input.length()-1);
         // substring [beginning, ending)
         String seednum = input.substring(1,input.length()-1);
-        int seedNUM = Integer.parseInt(seednum);
+        // int seedNUM = Integer.parseInt(seednum);
+        long seedNUM = Long.parseLong(seednum);
 
         RoomBuilder1 rb = new RoomBuilder1(seedNUM);
         Random RANDOM = new Random(seedNUM);
