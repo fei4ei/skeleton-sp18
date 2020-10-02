@@ -3,19 +3,37 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import byog.lab5.HexWorld;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class RoomBuilder {
+    TERenderer ter;
+    TETile[][] Tiles;
+    private static long SEED;
+    private static Random RANDOM;
     private static final int WIDTH = 60;
     private static final int HEIGHT = 40;
-    private static final long SEED = 2873123;
-    private static final Random RANDOM = new Random(SEED);
-    public static int[] currPos = {6,6};
-    public static int[] lastPos = {6,6};
+    private static int width = 54; // width and heights are measurements of the inner bound.
+    private static int height = 34;
 
-    /**
+    public RoomBuilder(long seed) {
+        SEED = seed;
+        RANDOM = new Random(SEED);
+        ter = new TERenderer();
+//        ter.initialize(WIDTH, HEIGHT);
+
+        Tiles = new TETile[WIDTH][HEIGHT];
+
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                Tiles[x][y] = Tileset.NOTHING;
+            }
+        }
+    }
+
+
+    /** Note that outermost layer cannot have Tileset.FLOOR: the wallbuilder will not wrap around this layer
      *
      * @param tiles
      */
@@ -52,25 +70,12 @@ public class RoomBuilder {
         // build the floor within the room and/or hallway
         for (int y = 0; y < sideHeight; y++) {
             for (int x = 0; x < sideWidth; x++) {
-                /**
-                if (pos[0] + x < 1 || pos[0] + x >= WIDTH-1 || pos[1] + y < 1 || pos[1] + y >= HEIGHT-1) {
-                    System.out.println("out of bounds");
-                    break;
-                }
-                 */
-                tiles[(pos[0] + x) % (WIDTH - 2) + 1][(pos[1] + y) % (HEIGHT - 2) + 1] = Tileset.FLOOR;
+                tiles[(pos[0] + x)][(pos[1] + y)] = Tileset.FLOOR;
             }
         }
     }
 
-    public static void RandomRooms(TETile[][] tiles) {
-        int sidewidth = RANDOM.nextInt(5)+1;
-        int sideheight = RANDOM.nextInt(5)+1;
-
-        RoomBuilder(tiles, sidewidth, sideheight, currPos);
-    }
-
-    public static void RoomConnector(TETile[][] tiles, int[] lastPos, int[] Pos) {
+    public static void PointConnector(TETile[][] tiles, int[] lastPos, int[] Pos) {
         if (lastPos.equals(Pos)) {
             return;
         }
@@ -82,96 +87,33 @@ public class RoomBuilder {
 
         // draw a horizontal floor
         for (int x = 0; x < maxX - minX + 1; x++) {
-            tiles[(minX + x) % (WIDTH - 2) + 1][Pos[1] % (HEIGHT - 2) + 1] = Tileset.FLOOR;
+            tiles[minX + x][Pos[1]] = Tileset.FLOOR;
         }
 
         //draw a vertical floor
         for (int y = 0; y < maxY - minY + 1; y++) {
-            tiles[lastPos[0] % (WIDTH - 2) + 1][(minY + y) % (HEIGHT - 2) + 1] = Tileset.FLOOR;
+            tiles[lastPos[0]][(minY + y)] = Tileset.FLOOR;
         }
     }
 
-    // 0: up; 1: down; 2: right; 3: left
-    public static int Direction(int[] Pos) {
-        if (Pos[0] <= WIDTH/2.0 && Pos[1] <= HEIGHT/2.0) {
-            return 0;
-        } else if (Pos[0] <= WIDTH/2.0 && Pos[1] > HEIGHT/2.0){
-            return 2;
-        } else if (Pos[1] > HEIGHT/2.0) {
-            return 1;
-        } else {
-            return 3;
+    /** This method generates an int array of sorted numbers from smallest to largest.
+     * Each number is generated as a random number between 0 and width.
+     * @param largest: each int is between [0, width].
+     * @param size: how many int in the array.
+     * @return
+     */
+    public static int[] randomY(int largest, int size) {
+        int[] results = new int[size];
+        for (int i = 0; i < size; i++) {
+            results[i] = RANDOM.nextInt(largest) + 1;
         }
+        return results;
     }
 
-    public static int[] NextPos(int[] Pos) {
-        if (Direction(Pos) == 0) {
-            return new int[]{Pos[0] + RANDOM.nextInt(2) - 1, Pos[1] + RANDOM.nextInt(5)};
-        } else if (Direction(Pos) == 1) {
-            return new int[]{Pos[0] + RANDOM.nextInt(2) - 1, Pos[1] - RANDOM.nextInt(5)};
-        } else if (Direction(Pos) == 2) {
-            return new int[]{Pos[0] + RANDOM.nextInt(5), Pos[1] + RANDOM.nextInt(2) - 1};
-        } else if (Direction(Pos) == 3) {
-            return new int[]{Pos[0] - RANDOM.nextInt(5), Pos[1] + RANDOM.nextInt(2) - 1};
-        } else {
-            return null;
-        }
+    public static int[] randomX(int largest, int size) {
+        int[] results = randomY(largest,size);
+        Arrays.sort(results);
+        return results;
     }
 
-    public static int NextCoord(int x, int boundX) {
-        int item = x + RANDOM.nextInt(5);
-        while (item > boundX - 6 || item < 6) {
-            item = x + RANDOM.nextInt(5);
-        }
-        return item;
-    }
-
-    public static void main(String[] args) {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-
-        TETile[][] Tiles = new TETile[WIDTH][HEIGHT];
-
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                Tiles[x][y] = Tileset.NOTHING;
-            }
-        }
-
-        for (int i = 0; i < 20; i++) {
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
-            // currPos[0] = currPos[0] + RANDOM.nextInt(10);
-            // currPos[1] = currPos[1] + RANDOM.nextInt(10);
-            currPos = NextPos(currPos);
-            RandomRooms(Tiles);
-            RoomConnector(Tiles, lastPos, currPos);
-        }
-
-        currPos[0] = 8;
-        currPos[1] = 32;
-        RoomConnector(Tiles, lastPos, currPos);
-        for (int i = 0; i < 20; i++) {
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
-            currPos = NextPos(currPos);
-            RandomRooms(Tiles);
-            RoomConnector(Tiles, lastPos, currPos);
-        }
-
-
-        currPos[0] = 52;
-        currPos[1] = 11;
-        RoomConnector(Tiles, lastPos, currPos);
-        for (int i = 0; i < 20; i++) {
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
-            currPos = NextPos(currPos);
-            RandomRooms(Tiles);
-            RoomConnector(Tiles, lastPos, currPos);
-        }
-
-        WallBuilder(Tiles, WIDTH, HEIGHT);
-        ter.renderFrame(Tiles);
-    }
 }

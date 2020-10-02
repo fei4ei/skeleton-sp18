@@ -7,7 +7,7 @@ import byog.TileEngine.Tileset;
 import java.util.Arrays;
 import java.util.Random;
 
-public class RoomBuilder1 {
+public class RoomBuilder {
     TERenderer ter;
     TETile[][] Tiles;
     private static long SEED = 2873123;
@@ -100,7 +100,7 @@ public class RoomBuilder1 {
         return results;
     }
 
-    public RoomBuilder1() {
+    public RoomBuilder() {
         ter = new TERenderer();
 //        ter.initialize(WIDTH, HEIGHT);
         width = WIDTH - 6;
@@ -115,7 +115,7 @@ public class RoomBuilder1 {
         }
     }
 
-public RoomBuilder1(long seed) {
+public RoomBuilder(long seed) {
         Random RANDOM = new Random(seed);
         SEED = seed;
         ter = new TERenderer();
@@ -133,7 +133,7 @@ public RoomBuilder1(long seed) {
 }
 
     public static void main(String[] args) {
-        RoomBuilder1 rb = new RoomBuilder1();
+        RoomBuilder rb = new RoomBuilder();
         int num = 20;
         int[] x = randomX(width, num);
         int[] y = randomY(height, num);

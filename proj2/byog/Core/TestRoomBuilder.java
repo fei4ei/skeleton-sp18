@@ -14,7 +14,7 @@ public class TestRoomBuilder {
 
     @Test
     public void testrandomX() {
-        int[] actual = RoomBuilder1.randomX(20, 10);
+        int[] actual = RoomBuilder.randomX(20, 10);
         System.out.println(Arrays.toString(actual));
         assertTrue(actual[0] <= actual[1]);
     }
@@ -46,8 +46,6 @@ public class TestRoomBuilder {
         // Game.stringPlay(Tiles, pos, dir, ter);
         Game.interactivePlay(Tiles, pos, ter);
         ter.renderFrame(Tiles);
-
-
 
     }
 }
