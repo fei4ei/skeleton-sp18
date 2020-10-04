@@ -14,7 +14,7 @@ public class Game {
     /* Feel free to change the width and height. */
     private static final int WIDTH = 60;
     private static final int HEIGHT = 40;
-    boolean Player_Can_Move = false;
+    int indexS = -1;
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -66,12 +66,30 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
         StdDraw.enableDoubleBuffering();
-        TETile[][] world = processFirstInput(input);
-
+        // TETile[][] world = processFirstInput(input);
+        World_n_Player wp = processInitialInput(input);
+        TETile[][] world = wp.world;
+        int[] pp = wp.PlayerPos;
+        movePlayer(world, pp, input.substring(indexS+1, input.length()));
         return world;
     }
 
-    private static TETile[][] processFirstInput(String input) {
+    private class World_n_Player {
+        int[] PlayerPos = {-1, -1};
+        TETile[][] world;
+
+        World_n_Player(WorldBuilder wb) {
+            world = wb.Tiles;
+            PlayerPos = wb.playerPos;
+        }
+
+        World_n_Player(TETile[][] tiles) {
+            world = tiles;
+            PlayerPos = findPlayerPos(tiles);
+        }
+    }
+
+    private World_n_Player processInitialInput(String input) {
         char first = input.charAt(0);
         int indexS = -1;
         if (first == 'N') {
@@ -81,7 +99,42 @@ public class Game {
                     break;
                 }
             }
+            if (indexS == -1) { // did not find S following N
+                return null;
+            }
 
+            String seednum = input.substring(1, indexS);  // substring [beginning, ending)
+            // int seedNUM = Integer.parseInt(seednum);
+            long seedNUM = Long.parseLong(seednum);
+            WorldBuilder rb = new WorldBuilder(seedNUM);
+            // movePlayer(rb.Tiles, rb.playerPos, input.substring(indexS+1, input.length()-1));
+            return new World_n_Player(rb);
+
+        } else if (first == 'L') {
+            TETile[][] loadedWorld = loadWorld();
+            // int[] playerPos = findPlayerPos(loadedWorld);
+            // movePlayer(loadedWorld, playerPos, input.substring(1, input.length()-1));
+            return new World_n_Player(loadedWorld);
+
+        } else if (first == 'Q') {
+            System.exit(0);
+            return null; // need updates
+
+        } else {
+            return null;
+        }
+    }
+
+    private TETile[][] processFirstInput(String input) {
+        char first = input.charAt(0);
+
+        if (first == 'N') {
+            for (int i = 1; i < input.length(); i++) {
+                if (input.charAt(i) == 'S') {
+                    indexS = i;
+                    break;
+                }
+            }
             if (indexS == -1) { // did not find S following N
                 return null;
             }
@@ -95,6 +148,7 @@ public class Game {
 
         } else if (first == 'L') {
             TETile[][] loadedWorld = loadWorld();
+            indexS = 0;
             // int[] playerPos = findPlayerPos(loadedWorld);
             // movePlayer(loadedWorld, playerPos, input.substring(1, input.length()-1));
             return loadedWorld;
@@ -175,6 +229,7 @@ public class Game {
         return new int[]{x,y};
     }
 
+    // saveWorld and loadWorld needed to be updated to handle World_n_Player type, rather than TETile[][]
     private static void saveWorld(TETile[][] w) {
         File f = new File("./history.ser");
         try {
@@ -226,42 +281,39 @@ public class Game {
         // plotWelcomePage(60, 40);
          */
 
-        /** test movePlayer() and findPlayerPos()
+        /** test findPlayerPos() and movePlayer() for new games
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
+        Game game = new Game();
         TETile[][] Tiles = processFirstInput("N45S");
         int[] actual = {3,13};
+        int[] found = findPlayerPos(Tiles);
+        System.out.println(found[0] + ", " + found[1]);
+        boolean testNew = Arrays.equals(actual, found);
+         // note that actual.equals(found) will be false
+        System.out.println(testNew);
         movePlayer(Tiles, actual, "dwww");
         ter.renderFrame(Tiles);
         */
 
-        /** test findPlayerPos() after loading and after creating a new world
-         *
-         */
+        /** test findPlayerPos() and movePlayer() after loading and after creating a new world
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
-        // TETile[][] Tiles = processFirstInput("N45S");
-        // int[] found = findPlayerPos(Tiles);
-        // System.out.println(found[0] + ", " + found[1]);
-        // int[] actual = {3,13};
-        // boolean testNew = Arrays.equals(actual, found);
-            // note that actual.equals(found) will be false
-        // System.out.println(testNew);
-
-        // saveWorld(Tiles);
-        // movePlayer(Tiles, actual, "dwww");
+        Game game = new Game();
+        TETile[][] Tiles = game.processFirstInput("N45S");
+        saveWorld(Tiles);
 
         TETile[][] loadedWORLD = loadWorld();
         int[] loaded = findPlayerPos(loadedWORLD);
-        // System.out.println(loaded[0] + ", " + loaded[1]);
-        // boolean testLoaded = Arrays.equals(actual, loaded);
+        System.out.println(loaded[0] + ", " + loaded[1]);
+        int[] actual = {3,13};
+        boolean testLoaded = Arrays.equals(actual, loaded);
 
-        // ter.renderFrame(Tiles);
         movePlayer(loadedWORLD, loaded, "dsss");
         ter.renderFrame(loadedWORLD);
+         */
 
-
-        /**
+        /** Test the world using a world with one tile of player and the rest floor.
         TETile[][] testTiles = new TETile[WIDTH][HEIGHT];
 
         for (int i = 0; i < WIDTH; i += 1) {
@@ -271,13 +323,14 @@ public class Game {
         }
         testTiles[0][2] = Tileset.PLAYER;
         saveWorld(testTiles);
-        */
+        ter.renderFrame(Tiles);
 
-//        TETile[][] fromloaded = loadWorld();
-//        int[] tp = findPlayerPos(fromloaded);
-//        System.out.println(tp[0] + ", " + tp[1]);
-//        movePlayer(fromloaded, tp, "dwww");
-//        ter.renderFrame(fromloaded);
+        TETile[][] fromloaded = loadWorld();
+        int[] tp = findPlayerPos(fromloaded);
+        System.out.println(tp[0] + ", " + tp[1]);
+        movePlayer(fromloaded, tp, "dwww");
+        ter.renderFrame(fromloaded);
+         */
 
         /** test moveOneStep
         WorldBuilder rb = new WorldBuilder(45);
@@ -301,6 +354,11 @@ public class Game {
         /** test characters other than numbers as seeds
         // long n = Long.parseLong("1ac2");
          */
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+        Game game = new Game();
+        TETile[][] final_world = game.playWithInputString("N45Sdsss");
+        ter.renderFrame(final_world);
 
     }
 }
