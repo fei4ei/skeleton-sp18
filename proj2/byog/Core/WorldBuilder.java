@@ -4,10 +4,11 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
-public class RoomBuilder {
+public class WorldBuilder {
     TERenderer ter;
     TETile[][] Tiles;
     private static long SEED;
@@ -16,8 +17,9 @@ public class RoomBuilder {
     private static final int HEIGHT = 40;
     private static int width = 54; // width and heights are measurements of the inner bound.
     private static int height = 34;
+    int[] playerPos = new int[2];
 
-    public RoomBuilder(long seed) {
+    public WorldBuilder(long seed) {
         SEED = seed;
         RANDOM = new Random(SEED);
         ter = new TERenderer();
@@ -25,13 +27,33 @@ public class RoomBuilder {
 
         Tiles = new TETile[WIDTH][HEIGHT];
 
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                Tiles[x][y] = Tileset.NOTHING;
+        for (int i = 0; i < WIDTH; i += 1) {
+            for (int j = 0; j < HEIGHT; j += 1) {
+                Tiles[i][j] = Tileset.NOTHING;
             }
         }
-    }
 
+        int num = 20;
+        int[] x = randomX(width, num);
+        int[] y = randomY(height, num);
+
+        for (int i = 1; i < num; i++) {
+            int[] lastPos = {x[i - 1], y[i - 1]};
+            int[] currPos = {x[i], y[i]};
+            PointConnector(Tiles, lastPos, currPos);
+            int sideH = RANDOM.nextInt(5)+1;
+            int sideW = RANDOM.nextInt(5)+1;
+            RoomBuilder(Tiles, sideH, sideW, currPos);
+        }
+
+        playerPos[0] = x[0];
+        playerPos[1] = y[0];
+        Tiles[x[0]][y[0]] = Tileset.PLAYER;
+
+        WallBuilder(Tiles, WIDTH, HEIGHT);
+//        rb.ter.renderFrame(rb.Tiles);
+
+    }
 
     /** Note that outermost layer cannot have Tileset.FLOOR: the wallbuilder will not wrap around this layer
      *
@@ -102,7 +124,7 @@ public class RoomBuilder {
      * @param size: how many int in the array.
      * @return
      */
-    public static int[] randomY(int largest, int size) {
+    public int[] randomY(int largest, int size) {
         int[] results = new int[size];
         for (int i = 0; i < size; i++) {
             results[i] = RANDOM.nextInt(largest) + 1;
@@ -110,10 +132,9 @@ public class RoomBuilder {
         return results;
     }
 
-    public static int[] randomX(int largest, int size) {
+    public int[] randomX(int largest, int size) {
         int[] results = randomY(largest,size);
         Arrays.sort(results);
         return results;
     }
-
 }
