@@ -5,7 +5,6 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
@@ -100,7 +99,7 @@ public class Game {
         }
     }
 
-    private World_n_Player processInitialInput(@NotNull String input) {
+    private World_n_Player processInitialInput(String input) {
         char first = input.charAt(0);
         // int indexS = -1;
         if (first == 'N') {
