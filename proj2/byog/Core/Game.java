@@ -5,6 +5,7 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
@@ -14,7 +15,13 @@ public class Game {
     /* Feel free to change the width and height. */
     private static final int WIDTH = 60;
     private static final int HEIGHT = 40;
-    int indexS = -1;
+    int indexS;
+    int indexColon;
+
+    public Game() {
+        indexS = -1;
+        indexColon = -1;
+    }
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -66,11 +73,15 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
         StdDraw.enableDoubleBuffering();
-        // TETile[][] world = processFirstInput(input);
         World_n_Player wp = processInitialInput(input);
         TETile[][] world = wp.world;
         int[] pp = wp.PlayerPos;
-        movePlayer(world, pp, input.substring(indexS+1, input.length()));
+        updateIndexColon(input);
+        movePlayer(world, pp, input.substring(indexS+1, indexColon));
+        if (indexColon < input.length() && indexColon > indexS) {
+            saveWorld(world);
+            System.exit(0);
+        }
         return world;
     }
 
@@ -89,9 +100,9 @@ public class Game {
         }
     }
 
-    private World_n_Player processInitialInput(String input) {
+    private World_n_Player processInitialInput(@NotNull String input) {
         char first = input.charAt(0);
-        int indexS = -1;
+        // int indexS = -1;
         if (first == 'N') {
             for (int i = 1; i < input.length(); i++) {
                 if (input.charAt(i) == 'S') {
@@ -111,6 +122,7 @@ public class Game {
             return new World_n_Player(rb);
 
         } else if (first == 'L') {
+            indexS = 0;
             TETile[][] loadedWorld = loadWorld();
             // int[] playerPos = findPlayerPos(loadedWorld);
             // movePlayer(loadedWorld, playerPos, input.substring(1, input.length()-1));
@@ -121,6 +133,7 @@ public class Game {
             return null; // need updates
 
         } else {
+            System.out.println("invalic input");
             return null;
         }
     }
@@ -172,13 +185,16 @@ public class Game {
             return;
         }
         for (int i = 0; i < movement.length(); i++) {
-            int[] newPos = moveOneStep(tiles, currPos, movement.charAt(i));
-            currPos[0] = newPos[0];
-            currPos[1] = newPos[1];
-            tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
-            tiles[lastPos[0]][lastPos[1]] = Tileset.FLOOR;
-            lastPos[0] = currPos[0];
-            lastPos[1] = currPos[1];
+            moveOneStep(tiles, currPos, movement.charAt(i));
+            // currPos is modified by moveOneStep(); so no need to assign a newPos variable
+            if (!Arrays.equals(currPos, lastPos)) {
+                // currPos[0] = newPos[0];
+                // currPos[1] = newPos[1];
+                tiles[currPos[0]][currPos[1]] = Tileset.PLAYER;
+                tiles[lastPos[0]][lastPos[1]] = Tileset.FLOOR;
+                lastPos[0] = currPos[0];
+                lastPos[1] = currPos[1];
+            }
         }
     }
 
@@ -204,10 +220,12 @@ public class Game {
                     pos[0] = pos[0] + 1;
                 }
                 break;
+            /**
             case 'q':
                 saveWorld(tiles);
                 System.exit(0);
                 break;
+             */
             default:
         }
         return pos;
@@ -227,6 +245,16 @@ public class Game {
             }
         }
         return new int[]{x,y};
+    }
+
+    private void updateIndexColon(String input) {
+        indexColon = input.length();
+        for (int i = indexS + 1; i < input.length() - 1; i++) {
+            if (input.charAt(i) == ':' && input.charAt(i+1) == 'q') {
+                indexColon = i;
+                break;
+            }
+        }
     }
 
     // saveWorld and loadWorld needed to be updated to handle World_n_Player type, rather than TETile[][]
@@ -342,23 +370,34 @@ public class Game {
          */
 
         /** test saveWorld and loadWorld
-        // TERenderer ter = new TERenderer();
-        // ter.initialize(WIDTH, HEIGHT);
-        // TETile[][] Tiles = processFirstInput("N45S");
-        // ter.renderFrame(rb.Tiles);
-        // saveWorld(Tiles);
-        // TETile[][] loadedWORLD = loadWorld();
-        // ter.renderFrame(loadedWORLD);
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+        TETile[][] Tiles = processFirstInput("N45S");
+        ter.renderFrame(rb.Tiles);
+        saveWorld(Tiles);
+        TETile[][] loadedWORLD = loadWorld();
+        ter.renderFrame(loadedWORLD);
          */
 
         /** test characters other than numbers as seeds
         // long n = Long.parseLong("1ac2");
          */
+
+         //test playWithInputString without :q
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         Game game = new Game();
-        TETile[][] final_world = game.playWithInputString("N45Sdsss");
-        ter.renderFrame(final_world);
+        // game.playWithInputString("N45Sdsss:q");
+        // TETile[][] loadedWorld = loadWorld();
+        TETile[][] loaded_world = game.playWithInputString("Laaww"); // "L" is a good special case
+        ter.renderFrame(loaded_world);
 
+
+        /** // test updateIndexColon
+        Game game = new Game();
+        System.out.println(game.indexColon);
+        game.updateIndexColon("N43S:q");
+        System.out.println(game. indexColon);
+         */
     }
 }
