@@ -78,7 +78,7 @@ public class Game {
         movePlayer(world, pp, input.substring(indexS+1, indexColon));
         if (indexColon < input.length() && indexColon > indexS) {
             saveWorld(world);
-            System.exit(0);
+            // System.exit(0);
         }
         return world;
     }
