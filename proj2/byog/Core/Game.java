@@ -257,7 +257,7 @@ public class Game {
 
     // saveWorld and loadWorld needed to be updated to handle World_n_Player type, rather than TETile[][]
     private static void saveWorld(TETile[][] w) {
-        File f = new File("./history.ser");
+        File f = new File("./history.txt");
         try {
             if (!f.exists()) {
                 f.createNewFile();
@@ -279,7 +279,7 @@ public class Game {
     No need to save/load the whole WorldBuilder class.
      */
     private static TETile[][] loadWorld() {
-        File f = new File("./history.ser");
+        File f = new File("./history.txt");
         if (f.exists()) {
             try {
                 FileInputStream fs = new FileInputStream(f);
