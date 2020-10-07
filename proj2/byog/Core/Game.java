@@ -1,6 +1,5 @@
 package byog.Core;
 
-import byog.SaveDemo.World;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
@@ -71,7 +70,7 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-        StdDraw.enableDoubleBuffering();
+        // StdDraw.enableDoubleBuffering();
         World_n_Player wp = processInitialInput(input);
         TETile[][] world = wp.world;
         int[] pp = wp.PlayerPos;
