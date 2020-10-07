@@ -70,7 +70,7 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-        // StdDraw.enableDoubleBuffering();
+        input = input.toLowerCase();
         World_n_Player wp = processInitialInput(input);
         TETile[][] world = wp.world;
         int[] pp = wp.PlayerPos;
@@ -101,9 +101,9 @@ public class Game {
     private World_n_Player processInitialInput(String input) {
         char first = input.charAt(0);
         // int indexS = -1;
-        if (first == 'N') {
+        if (first == 'n') {
             for (int i = 1; i < input.length(); i++) {
-                if (input.charAt(i) == 'S') {
+                if (input.charAt(i) == 's') {
                     indexS = i;
                     break;
                 }
@@ -119,19 +119,19 @@ public class Game {
             // movePlayer(rb.Tiles, rb.playerPos, input.substring(indexS+1, input.length()-1));
             return new World_n_Player(rb);
 
-        } else if (first == 'L') {
+        } else if (first == 'l') {
             indexS = 0;
             TETile[][] loadedWorld = loadWorld();
             // int[] playerPos = findPlayerPos(loadedWorld);
             // movePlayer(loadedWorld, playerPos, input.substring(1, input.length()-1));
             return new World_n_Player(loadedWorld);
 
-        } else if (first == 'Q') {
+        } else if (first == 'q') {
             System.exit(0);
             return null; // need updates
 
         } else {
-            System.out.println("invalic input");
+            System.out.println("invalid input");
             return null;
         }
     }
@@ -387,7 +387,8 @@ public class Game {
         Game game = new Game();
         // game.playWithInputString("N45Sdsss:q");
         // TETile[][] loadedWorld = loadWorld();
-        TETile[][] loaded_world = game.playWithInputString("Laaww"); // "L" is a good special case
+        // TETile[][] loaded_world = game.playWithInputString("Laaww"); // "L" is a good special case
+        TETile[][] loaded_world = game.playWithInputString("Laaww");
         ter.renderFrame(loaded_world);
 
 
