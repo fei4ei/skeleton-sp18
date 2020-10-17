@@ -32,14 +32,14 @@ public class Percolation {
     public Percolation(int N) {
         // grid = new int[N][N];
         n = N;
-        grid = new WeightedQuickUnionUF(N*N+3);
-        // N*N+3: dummy open site at N*N (turns out to be problematic. Not implemented)
-        // virtual top site at N*N+1
-        // virtual bottom site at N*N+2 (turns out to be not used. Used Union find instead).
+        grid = new WeightedQuickUnionUF(N*N+1);
+        // N*N+1: dummy open site at N*N+2 (turns out to be problematic. Not implemented)
+        // virtual top site at N*N
+        // virtual bottom site at N*N+1 (turns out to be not used. Used Union find instead).
 
-        openTracker = new int[N*N+3];
+        openTracker = new int[N*N+1];
         // virtual top site is always full.
-        openTracker[N*N+1] = 1;
+        openTracker[N*N] = 1;
         // Initial status of the grid: all sites are closed, virtual bottom site is closed.
 
         bottomFull = false;
@@ -72,11 +72,11 @@ public class Percolation {
 
         // open sites of top rows are connected to the virtual top site
         if (row == n-1) {
-            grid.union(n*n+1, index);
+            grid.union(n*n, index);
         }
 
         // open sites of bottom rows are connected to the virtual bottom site;
-        if (row == 0 && grid.find(index) == grid.find(n*n+1)) {
+        if (row == 0 && bottomFull == false && grid.find(index) == grid.find(n*n)) {
             bottomFull = true;
         }
         // An initial implementation leads to the "backwash" problem
@@ -98,7 +98,8 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) {
        // return (grid[row][col] == 1);
-       return (openTracker[col*n + row] == 1);
+       int index = xyto1D(col, row);
+       return isOpen(index);
        // return grid.find(n*n) == grid.find(xyto1D(col, row));
     }
 
@@ -107,7 +108,7 @@ public class Percolation {
     }
 
     public boolean isFull(int row, int col) {
-        return (grid.find(n*n+1) == grid.find(xyto1D(col, row)));
+        return (grid.find(n*n) == grid.find(xyto1D(col, row)));
     }
 
     public int numberOfOpenSites() {
@@ -125,7 +126,7 @@ public class Percolation {
      */
     public boolean percolates() {
         // open sites of bottom rows are connected to the virtual bottom site; however, this design suffers the backwash problem
-//        return (grid.find(n*n+2) == grid.find(n*n+1));
+//        return (grid.find(n*n+1) == grid.find(n*n));
         return bottomFull;
     }
 
