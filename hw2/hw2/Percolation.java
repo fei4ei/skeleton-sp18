@@ -8,10 +8,13 @@ public class Percolation {
     // int[][] grid;
     // for the opentracker: 0: closed; 1: open; 2: full;
     private WeightedQuickUnionUF grid;
-    private int[] openTracker;
-    private int n;
-    private boolean percolate;
+    private int[] openTracker; // tracks the status of open vs. closed for each site in the grid
+    // Tuo used a class for each site with three variable: int row, int column, boolean open
+    private int n; // this is the length of each side, i.e., the grid is n*n
+    private boolean percolate; // track whether the grid percolates or not
+    private int countOpen; // track the number of open sites in the grid
 
+    // convert row (y) and col (x) to 1d index
     private int xyto1D(int x, int y) {
         if ((x < 0) || (y < 0) || (x >= n) || (y >= n)) {
             return -1;
@@ -43,7 +46,8 @@ public class Percolation {
         // virtual top site is always full.
         openTracker[N*N] = 1;
         // Initial status of the grid: all sites are closed, virtual bottom site is closed.
-
+        percolate = false;
+        countOpen = 0;
 //        bottomFull = false;
     }
 
@@ -56,6 +60,7 @@ public class Percolation {
         // grid[row][col] = 1;
         int index = xyto1D(col, row);
         openTracker[index] = 1;
+        countOpen += 1;
         // grid.union(n*n, index);
         /* An initial design that connects a dummy open site with the current site
         leads to an unsolvable problem of prematurely connecting sites, and is not pursued.
@@ -108,8 +113,7 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) {
        // return (grid[row][col] == 1);
-       int index = xyto1D(col, row);
-       return isOpen(index);
+       return isOpen(xyto1D(col, row));
        // return grid.find(n*n) == grid.find(xyto1D(col, row));
     }
 
@@ -118,21 +122,23 @@ public class Percolation {
     }
 
     public boolean isFull(int row, int col) {
-        return (grid.find(n*n) == grid.find(xyto1D(col, row)));
+        return isFull(xyto1D(col, row));
     }
 
     private boolean isFull(int index) {
         return (grid.find(n*n) == grid.find(index));
     }
 
+    // the original design is O(n*n), not O(1)
     public int numberOfOpenSites() {
-        int j = 0;
-        for (int i = 0; i < n*n; i++) {
-            if (openTracker[i] == 1) {
-                j++;
-            }
-        }
-        return j;
+//        int j = 0;
+//        for (int i = 0; i < n*n; i++) {
+//            if (openTracker[i] == 1) {
+//                j++;
+//            }
+//        }
+//        return j;
+        return countOpen;
     }
 
     /** Does the system percolate?
