@@ -2,6 +2,8 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+// my original design is percolating from row = n-1 to row = 0, with x pointing right and y pointing up.
+
 public class Percolation {
     // int[][] grid;
     // for the opentracker: 0: closed; 1: open; 2: full;
