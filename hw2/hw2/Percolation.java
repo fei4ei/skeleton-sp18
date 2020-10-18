@@ -7,10 +7,10 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     // int[][] grid;
     // for the opentracker: 0: closed; 1: open; 2: full;
-    WeightedQuickUnionUF grid;
-    int[] openTracker;
-    int n;
-    boolean bottomFull;
+    private WeightedQuickUnionUF grid;
+    private int[] openTracker;
+    private int n;
+    private boolean bottomFull;
 
     private int xyto1D(int x, int y) {
         if ((x < 0) || (y < 0) || (x >= n) || (y >= n)) {
@@ -73,12 +73,12 @@ public class Percolation {
         }
 
         // open sites of top rows are connected to the virtual top site
-        if (row == n-1) {
+        if (row == 0) {
             grid.union(n*n, index);
         }
 
-        // open sites of bottom rows are connected to the virtual bottom site;
-        if (row == 0 && bottomFull == false && grid.find(index) == grid.find(n*n)) {
+        // if a site in the bottom row is opened, it is connected to the virtual bottom site;
+        if (row == n-1 && bottomFull == false && grid.find(index) == grid.find(n*n)) {
             bottomFull = true;
         }
         // An initial implementation leads to the "backwash" problem
@@ -129,7 +129,13 @@ public class Percolation {
     public boolean percolates() {
         // open sites of bottom rows are connected to the virtual bottom site; however, this design suffers the backwash problem
 //        return (grid.find(n*n+1) == grid.find(n*n));
-        return bottomFull;
+
+        for (int i = 0; i < n; i++){
+            if (isFull(n-1, i)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** use for unit testing
