@@ -8,10 +8,11 @@ public class Percolation {
     // int[][] grid;
     // for the opentracker: 0: closed; 1: open; 2: full;
     private WeightedQuickUnionUF grid;
+    private WeightedQuickUnionUF percolates;
     private int[] openTracker; // tracks the status of open vs. closed for each site in the grid
     // Tuo used a class for each site with three variable: int row, int column, boolean open
     private int n; // this is the length of each side, i.e., the grid is n*n
-    private boolean percolate; // track whether the grid percolates or not
+//    private boolean percolate; // track whether the grid percolates or not
     private int countOpen; // track the number of open sites in the grid
 
     // convert row (y) and col (x) to 1d index
@@ -39,6 +40,7 @@ public class Percolation {
         // grid = new int[N][N];
         n = N;
         grid = new WeightedQuickUnionUF(N*N+2);
+        percolates = new WeightedQuickUnionUF(N*N+2);
         // N*N+1: dummy open site at N*N+2 (turns out to be problematic. Not implemented)
         // virtual top site at N*N
         // virtual bottom site at N*N+1 (turns out to be not used. Used Union find instead).
@@ -47,7 +49,7 @@ public class Percolation {
         // virtual top site is always full.
         openTracker[N*N] = 1;
         // Initial status of the grid: all sites are closed, virtual bottom site is closed.
-        percolate = false;
+//        percolate = false;
         countOpen = 0;
 //        bottomFull = false;
     }
@@ -84,12 +86,14 @@ public class Percolation {
             }
             if (isOpen(Neighbors[i])) {
                 grid.union(index, Neighbors[i]);
+                percolates.union(index, Neighbors[i]);
             }
         }
 
         // open sites of top rows are connected to the virtual top site
         if (row == 0) {
             grid.union(n*n, index);
+            percolates.union(n*n, index);
         }
 
         // if a site in the bottom row is opened, it is connected to the virtual bottom site;
@@ -97,17 +101,17 @@ public class Percolation {
 //        if (row == n-1 && bottomFull == false && grid.find(index) == grid.find(n*n)) {
 //            bottomFull = true;
 //        }
-        if (row == n-1 && percolate == false) {
-            grid.union(n*n+1, index);
-        }
-
-        if (isFull(n*n+1)) {
-            percolate = true;
-        }
-        // An initial implementation leads to the "backwash" problem
-//        if (row == 0) {
-//            grid.union(n*n+2, index);
+//        if (row == n-1 && percolate == false) {
+//            grid.union(n*n+1, index);
 //        }
+//
+//        if (isFull(n*n+1)) {
+//            percolate = true;
+//        }
+        // An initial implementation leads to the "backwash" problem
+        if (row == n-1) {
+            percolates.union(n*n+1, index);
+        }
     }
 
     // return the 1D index of neighboring sites. pay attention to corner cases.
@@ -157,13 +161,13 @@ public class Percolation {
     public boolean percolates() {
         // open sites of bottom rows are connected to the virtual bottom site; however, this design suffers the backwash problem
 //        return (grid.find(n*n+1) == grid.find(n*n));
-        for (int i = 0; i < n; i++){
-            if (isFull(n-1, i)) {
-                return true;
-            }
-        }
-        return false;
-//        return isFull(n*n+1);
+//        for (int i = 0; i < n; i++){
+//            if (isFull(n-1, i)) {
+//                return true;
+//            }
+//        }
+//        return false;
+        return (percolates.find(n*n) == percolates.find(n*n+1));
     }
 
     /** use for unit testing

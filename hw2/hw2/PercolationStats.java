@@ -2,6 +2,11 @@ package hw2;
 
 import java.util.Random;
 import edu.princeton.cs.introcs.StdRandom;
+import edu.princeton.cs.introcs.StdStats;
+
+import static edu.princeton.cs.introcs.StdRandom.uniform;
+import static edu.princeton.cs.introcs.StdStats.mean;
+import static edu.princeton.cs.introcs.StdStats.stddev;
 
 public class PercolationStats {
     private int num_of_exp;
@@ -20,19 +25,23 @@ public class PercolationStats {
         for (int i = 0; i < T; i++) {
             perc[i] = pf.make(N);
             while (!perc[i].percolates()) {
-                rand_int = rand.nextInt(N*N); // generate a random number between [0, N*N)
+                // generate a random number between [0, N*N)
+                rand_int = uniform(0, N*N);
+//                rand_int = rand.nextInt(N*N);
                 if (!perc[i].isOpen(rand_int)) {
                     perc[i].open(rand_int);
                 }
             }
             num_opensite[i] = perc[i].numberOfOpenSites();
-            sum += num_opensite[i];
+//            sum += num_opensite[i];
         }
-        mean = sum / (N*N*T);
-        stddev = Math.sqrt(variance(mean)) / (N*N);
+        mean = mean(num_opensite) / (N*N);
+        stddev = stddev(num_opensite) / (N*N);
+//        mean = sum / (N*N*T);
+//        stddev = Math.sqrt(variance(mean)) / (N*N);
     }
 
-    public double mean() {
+    public double mymean() {
         return mean;
     }
 
@@ -44,7 +53,7 @@ public class PercolationStats {
         return sumDev / (num_of_exp - 1);
     }
 
-    public double stddev() {
+    public double mystddev() {
         return stddev;
     }
 
@@ -63,11 +72,11 @@ public class PercolationStats {
     public static void main(String[] args) {
         PercolationFactory pf = new PercolationFactory();
         PercolationStats ps = new PercolationStats(5, 50, pf);
-        System.out.println(ps.mean());
-        System.out.println(ps.stddev());
+//        System.out.println(ps.mymean());
+        System.out.println(ps.mean);
+//        System.out.println(ps.mystddev());
+        System.out.println(ps.stddev);
         System.out.println(ps.confidenceLow());
         System.out.println(ps.confidenceHigh());
     }
-
-
 }
