@@ -35,13 +35,13 @@ public class PercolationStats {
             num_opensite[i] = perc[i].numberOfOpenSites();
 //            sum += num_opensite[i];
         }
-        mean = mean(num_opensite) / (N*N);
-        stddev = stddev(num_opensite) / (N*N);
+        mean = edu.princeton.cs.introcs.StdStats.mean(num_opensite) / (N*N);
+        stddev = edu.princeton.cs.introcs.StdStats.stddev(num_opensite) / (N*N);
 //        mean = sum / (N*N*T);
 //        stddev = Math.sqrt(variance(mean)) / (N*N);
     }
 
-    public double mymean() {
+    public double mean() {
         return mean;
     }
 
@@ -53,7 +53,7 @@ public class PercolationStats {
         return sumDev / (num_of_exp - 1);
     }
 
-    public double mystddev() {
+    public double stddev() {
         return stddev;
     }
 
