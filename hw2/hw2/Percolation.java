@@ -2,7 +2,7 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-// my original design is percolating from row = n-1 to row = 0, with x pointing right and y pointing up.
+// x pointing right and y pointing down; row and col number of the top left site is [0,0]
 
 public class Percolation {
     // int[][] grid;
@@ -26,10 +26,11 @@ public class Percolation {
         if ((index < 0) || (index >= n*n)) {
             return new int[]{-1, -1};
         }
-        int x = index % n;
-        int y = index / n;
-        return new int[]{x, y};
+        int col = index % n;
+        int row = index / n;
+        return new int[]{row, col};
     }
+
 
     /** create N-by-N grid, with all sites initially blocked
      * @param N: size of the grid
@@ -51,12 +52,21 @@ public class Percolation {
 //        bottomFull = false;
     }
 
+    void open(int index) {
+        int[] coord = oneDtoxy(index);
+        open(coord[0], coord[1]);
+    }
+
     /** open the site (row, col) if it is not open already
      *
      * @param row: y
      * @param col: x
      */
     public void open(int row, int col) {
+        if (isOpen(row, col)) {
+            return;
+        }
+
         // grid[row][col] = 1;
         int index = xyto1D(col, row);
         openTracker[index] = 1;
@@ -117,7 +127,7 @@ public class Percolation {
        // return grid.find(n*n) == grid.find(xyto1D(col, row));
     }
 
-    private boolean isOpen(int index) {
+    boolean isOpen(int index) {
         return (openTracker[index] == 1);
     }
 
@@ -147,14 +157,13 @@ public class Percolation {
     public boolean percolates() {
         // open sites of bottom rows are connected to the virtual bottom site; however, this design suffers the backwash problem
 //        return (grid.find(n*n+1) == grid.find(n*n));
-//        for (int i = 0; i < n; i++){
-//            if (isFull(n-1, i)) {
-//                return true;
-//            }
-//        }
-//        return false;
+        for (int i = 0; i < n; i++){
+            if (isFull(n-1, i)) {
+                return true;
+            }
+        }
+        return false;
 //        return isFull(n*n+1);
-        return percolate;
     }
 
     /** use for unit testing
