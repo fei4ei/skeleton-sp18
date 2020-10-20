@@ -83,7 +83,7 @@ public class PercolationStats {
      *
      * @param args
      */
-//    private static void main(String[] args) {
+//    public static void main(String[] args) {
 //        PercolationFactory pf = new PercolationFactory();
 //        PercolationStats ps = new PercolationStats(5, 50, pf);
 ////        System.out.println(ps.mymean());
