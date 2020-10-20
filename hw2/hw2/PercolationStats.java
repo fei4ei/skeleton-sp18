@@ -83,14 +83,14 @@ public class PercolationStats {
      *
      * @param args
      */
-    private static void main(String[] args) {
-        PercolationFactory pf = new PercolationFactory();
-        PercolationStats ps = new PercolationStats(5, 50, pf);
-//        System.out.println(ps.mymean());
-        System.out.println(ps.mean);
-//        System.out.println(ps.mystddev());
-        System.out.println(ps.stddev);
-        System.out.println(ps.confidenceLow());
-        System.out.println(ps.confidenceHigh());
-    }
+//    private static void main(String[] args) {
+//        PercolationFactory pf = new PercolationFactory();
+//        PercolationStats ps = new PercolationStats(5, 50, pf);
+////        System.out.println(ps.mymean());
+//        System.out.println(ps.mean);
+////        System.out.println(ps.mystddev());
+//        System.out.println(ps.stddev);
+//        System.out.println(ps.confidenceLow());
+//        System.out.println(ps.confidenceHigh());
+//    }
 }

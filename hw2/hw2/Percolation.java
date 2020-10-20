@@ -186,13 +186,13 @@ public class Percolation {
      *
      * @param args
      */
-    private static void main(String[] args) {
-        Percolation perc = new Percolation(3);
-        perc.open(0,0);
-        perc.open(1,0);
-        perc.open(2,0);
-        System.out.println(perc.percolates());
-        System.out.println(perc.numberOfOpenSites());
-    }
+//    private static void main(String[] args) {
+//        Percolation perc = new Percolation(3);
+//        perc.open(0,0);
+//        perc.open(1,0);
+//        perc.open(2,0);
+//        System.out.println(perc.percolates());
+//        System.out.println(perc.numberOfOpenSites());
+//    }
 
 }
