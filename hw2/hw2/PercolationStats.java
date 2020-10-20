@@ -10,33 +10,42 @@ import static edu.princeton.cs.introcs.StdStats.stddev;
 
 public class PercolationStats {
     private int num_of_exp;
-    private Random rand = new Random();
+//    private Random rand = new Random();
     private int rand_int;
     private double[] num_opensite;
-    private Percolation[] perc;
+    private double[] percent_opensite;
+//    private Percolation[] perc;
+    private Percolation pc;
     private double mean;
     private double stddev;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
         num_of_exp = T;
         num_opensite = new double[T];
-        perc = new Percolation[T];
-        double sum = 0;
+        percent_opensite = new double[T];
+//        perc = new Percolation[T];
+//        double sum = 0;
         for (int i = 0; i < T; i++) {
-            perc[i] = pf.make(N);
-            while (!perc[i].percolates()) {
+            pc = pf.make(N);
+            while (!pc.percolates()) {
                 // generate a random number between [0, N*N)
                 rand_int = uniform(0, N*N);
 //                rand_int = rand.nextInt(N*N);
-                if (!perc[i].isOpen(rand_int)) {
-                    perc[i].open(rand_int);
+                if (!pc.isOpen(rand_int)) {
+                    pc.open(rand_int);
                 }
             }
-            num_opensite[i] = perc[i].numberOfOpenSites();
+            num_opensite[i] = pc.numberOfOpenSites();
+            percent_opensite[i] = num_opensite[i]/(N*N);
+//            double temp = pc.numberOfOpenSites()/Math.pow(N,2);
+//            double temp = pc.numberOfOpenSites()/(N*N); // why is this line problematic? int/int
+//            System.out.println(temp);
+//            System.out.println(num_opensite[i]);
+//            System.out.println(percent_opensite[i]);
 //            sum += num_opensite[i];
         }
-        mean = edu.princeton.cs.introcs.StdStats.mean(num_opensite) / (N*N);
-        stddev = edu.princeton.cs.introcs.StdStats.stddev(num_opensite) / (N*N);
+        mean = edu.princeton.cs.introcs.StdStats.mean(percent_opensite);
+        stddev = edu.princeton.cs.introcs.StdStats.stddev(percent_opensite);
 //        mean = sum / (N*N*T);
 //        stddev = Math.sqrt(variance(mean)) / (N*N);
     }
@@ -45,13 +54,13 @@ public class PercolationStats {
         return mean;
     }
 
-    private double variance(double mean) {
-        double sumDev = 0;
-        for (int i = 0; i < num_of_exp; i++) {
-            sumDev += Math.pow((perc[i].numberOfOpenSites() - mean), 2);
-        }
-        return sumDev / (num_of_exp - 1);
-    }
+//    private double variance(double mean) {
+//        double sumDev = 0;
+//        for (int i = 0; i < num_of_exp; i++) {
+//            sumDev += Math.pow((pc.numberOfOpenSites() - mean), 2);
+//        }
+//        return sumDev / (num_of_exp - 1);
+//    }
 
     public double stddev() {
         return stddev;

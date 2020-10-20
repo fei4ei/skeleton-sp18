@@ -37,6 +37,9 @@ public class Percolation {
      * @param N: size of the grid
      */
     public Percolation(int N) {
+        if (N < 0) {
+            throw new IllegalArgumentException();
+        }
         // grid = new int[N][N];
         n = N;
         grid = new WeightedQuickUnionUF(N*N+2);
@@ -71,6 +74,9 @@ public class Percolation {
 
         // grid[row][col] = 1;
         int index = xyto1D(col, row);
+        if (index < 0 || index > n*n) {
+            throw new IndexOutOfBoundsException();
+        }
         openTracker[index] = 1;
         countOpen += 1;
         // grid.union(n*n, index);
@@ -132,6 +138,9 @@ public class Percolation {
     }
 
     boolean isOpen(int index) {
+        if (index < 0 || index > n*n) {
+            throw new IndexOutOfBoundsException();
+        }
         return (openTracker[index] == 1);
     }
 
@@ -140,6 +149,9 @@ public class Percolation {
     }
 
     private boolean isFull(int index) {
+        if (index < 0 || index > n*n) {
+            throw new IndexOutOfBoundsException();
+        }
         return (grid.find(n*n) == grid.find(index));
     }
 
