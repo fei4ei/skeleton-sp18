@@ -186,7 +186,7 @@ public class Percolation {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         Percolation perc = new Percolation(3);
         perc.open(0,0);
         perc.open(1,0);
