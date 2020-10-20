@@ -20,6 +20,9 @@ public class PercolationStats {
     private double stddev;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
+        if (T <= 0 || N <= 0) {
+            throw new IllegalArgumentException();
+        }
         num_of_exp = T;
         num_opensite = new double[T];
         percent_opensite = new double[T];
@@ -31,8 +34,10 @@ public class PercolationStats {
                 // generate a random number between [0, N*N)
                 rand_int = uniform(0, N*N);
 //                rand_int = rand.nextInt(N*N);
-                if (!pc.isOpen(rand_int)) {
-                    pc.open(rand_int);
+                int row = rand_int / N;
+                int col = rand_int % N;
+                if (!pc.isOpen(row, col)) {
+                    pc.open(row, col);
                 }
             }
             num_opensite[i] = pc.numberOfOpenSites();

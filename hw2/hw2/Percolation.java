@@ -57,7 +57,7 @@ public class Percolation {
 //        bottomFull = false;
     }
 
-    void open(int index) {
+    private void open(int index) {
         int[] coord = oneDtoxy(index);
         open(coord[0], coord[1]);
     }
@@ -137,7 +137,7 @@ public class Percolation {
        // return grid.find(n*n) == grid.find(xyto1D(col, row));
     }
 
-    boolean isOpen(int index) {
+    private boolean isOpen(int index) {
         if (index < 0 || index > n*n) {
             throw new IndexOutOfBoundsException();
         }
