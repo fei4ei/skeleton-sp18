@@ -3,6 +3,7 @@ package lab9;
 import edu.princeton.cs.algs4.Stack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -158,6 +159,25 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         }
     }
 
+    /**
+     * Removes the smallest key and associated value from the symbol table.
+     *
+     * @throws NoSuchElementException if the symbol table is empty
+     */
+    public void deleteMin() {
+        if (size == 0) throw new NoSuchElementException("Symbol table underflow");
+        root = deleteMin(root);
+    }
+
+    private Node deleteMin(Node x) {
+        if (x.left == null) return x.right;
+        x.left = deleteMin(x.left);
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+
+
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
@@ -178,22 +198,71 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        return remove(root, key).value;
     }
 
-    /** Removes the key-value entry for the specified key only if it is
-     *  currently mapped to the specified value.  Returns the VALUE removed,
-     *  null on failed removal.
-     **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        if (get(key) == value) {
+            return remove(key);
+        } else {
+            throw new NoSuchElementException("did not find key-value pair");
+        }
     }
+
+    // page 411 of Sedgewick Algorithm
+    private Node remove(Node x, K key) {
+        if (x == null) { // base case #1
+            return null;
+        }
+        int cp = key.compareTo(x.key);
+        if (cp < 0) {
+            x.left = remove(x.left, key);
+        } else if (cp > 0) {
+            x.right = remove(x.right, key);
+        } else { // found the node to be removed
+            if (x.right == null) { // first case: x has only left child
+                x = x.left; //?? return (x.left) will not update x.size??
+            }
+            if (x.left == null) { // second case: x has only right child
+                x = x.right;
+            }
+            // third case: x has both left and right children
+            Node t = x; // save a link to the node to be deleted in t
+            x = min(t.right); // set x to point to its successor min(t.right)
+            x.right = deleteMin(t.right); // set the right link of x to deleteMin(t.right)
+            x.left = t.left; // set the left link of x (which was not null) to t.left
+        }
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    public K min() {
+        if (size == 0) {
+            throw new NoSuchElementException("calls min() with empty map");
+        }
+        return min(root).key;
+    }
+
+    private Node min(Node x) {
+        if (x.left == null) { // base caser
+            return x;
+        }else { // recursion
+            return min(x.left);
+        }
+    }
+
 
     @Override
     public Iterator<K> iterator() {
         Stack ss = keyStack();
-        return ss.iterator();
+        return ss.iterator(); // use the iterator of the stack class
     }
 
     public static void main(String[] args) {
