@@ -203,10 +203,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
         // System.out.println(bstmap.keySet());
-        Iterator see = bstmap.iterator();
-        while (see.hasNext()) {
-            System.out.println(see.next());
+//        Iterator see = bstmap.iterator();
+//        while (see.hasNext()) {
+//            System.out.println(see.next());
+//        }
+        for (String ss : bstmap) {
+            System.out.println(ss);
         }
-
     }
 }
