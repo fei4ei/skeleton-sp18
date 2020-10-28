@@ -1,27 +1,32 @@
 package lab9;
 
+import edu.princeton.cs.algs4.Stack;
+
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
  *
  * @author Your name here
  */
-public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterable<K>{
 
-    private class Node {
+    class Node {
         /* (K, V) pair stored in this Node. */
-        private K key;
-        private V value;
+        K key;
+        V value;
+        private int size; //number of nodes in subtree
 
         /* Children of this Node. */
         private Node left;
         private Node right;
 
-        private Node(K k, V v) {
+        private Node(K k, V v, int s) {
             key = k;
             value = v;
+            size = s;
         }
     }
 
@@ -44,7 +49,23 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        // corner case
+        if (key == null) {
+            throw new IllegalArgumentException("call get() with a null key");
+        }
+        // base case
+        if (p == null) {
+            return null;
+        }
+        // K extends Comparable<K>, and therefore has the compareTo() method
+        int cp = key.compareTo(p.key);
+        if (cp < 0) {
+            return getHelper(key, p.left);
+        } else if (cp > 0) {
+            return getHelper(key, p.right);
+        } else {
+            return p.value;
+        }
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,14 +73,29 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        return getHelper(key, root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
       * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
+        // if there is already the same key in the tree, the value associated with the key will be updated
+        // base case: p is an empty null
+        if (p == null) {
+            return new Node(key, value, 1);
+        }
+        int cp = key.compareTo(p.key);
+        if (cp < 0) {
+            p.left = putHelper(key, value, p.left);
+        } else if (cp > 0) {
+            p.right = putHelper(key, value, p.right);
+        } else {
+            p.value = value;
+        }
+        p.size = 1 + size(p.left) + size(p.right);
+        // p.left could be null so we cannot use p.left.size here
+        return p;
     }
 
     /** Inserts the key KEY
@@ -67,21 +103,73 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            throw new IllegalArgumentException("Calls put() with a null key");
+        }
+        // this implementation did account for the corner case of value == null
+        root = putHelper(key, value, root);
+    }
+
+    private int size(Node p) {
+        if (p == null) {
+            return 0;
+        } else {
+            return p.size;
+        }
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size(root);
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
 
+    /** Visitor pattern
+     *
+     * @param T
+     * @param WhatToDo
+     */
+    void inorderTraverse(Node T, Action WhatToDo) {
+        if (T == null) {
+            return;
+        }
+        inorderTraverse(T.left, WhatToDo);
+        WhatToDo.visit(T);
+        inorderTraverse(T.right, WhatToDo);
+    }
+
+    class KeyToSet implements Action {
+        TreeSet myKeySet = new TreeSet<>();
+
+        @Override
+        public void visit(BSTMap.Node T) {
+            myKeySet.add(T.key);
+        }
+    }
+
+    class KeyToStack implements Action {
+        Stack myKeyStack = new Stack<>();
+
+        @Override
+        public void visit(BSTMap.Node T) {
+            myKeyStack.push(T.key);
+        }
+    }
+
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        KeyToSet as = new KeyToSet();
+        inorderTraverse(root, as);
+        return as.myKeySet;
+    }
+
+    public Stack<K> keyStack() {
+        KeyToStack ks = new KeyToStack();
+        inorderTraverse(root, ks);
+        return ks.myKeyStack;
     }
 
     /** Removes KEY from the tree if present
@@ -104,6 +192,20 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        Stack ss = keyStack();
+        return ss.iterator();
+    }
+
+    public static void main(String[] args) {
+        BSTMap<String, Integer> bstmap = new BSTMap<>();
+        bstmap.put("hello", 5);
+        bstmap.put("cat", 10);
+        bstmap.put("fish", 22);
+        bstmap.put("zebra", 90);
+        // System.out.println(bstmap.keySet());
+        Iterator see = bstmap.iterator();
+        while (see.hasNext()) {
+            System.out.println(see.next());
+        }
     }
 }
