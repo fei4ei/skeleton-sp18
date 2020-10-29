@@ -159,6 +159,20 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         }
     }
 
+    /* Returns a Set view of the keys contained in this map. */
+    @Override
+    public Set<K> keySet() {
+        KeyToSet as = new KeyToSet();
+        inorderTraverse(root, as);
+        return as.myKeySet;
+    }
+
+    public Stack<K> keyStack() {
+        KeyToStack ks = new KeyToStack();
+        inorderTraverse(root, ks);
+        return ks.myKeyStack;
+    }
+
     /**
      * Removes the smallest key and associated value from the symbol table.
      *
@@ -174,22 +188,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         x.left = deleteMin(x.left);
         x.size = size(x.left) + size(x.right) + 1;
         return x;
-    }
-
-
-
-    /* Returns a Set view of the keys contained in this map. */
-    @Override
-    public Set<K> keySet() {
-        KeyToSet as = new KeyToSet();
-        inorderTraverse(root, as);
-        return as.myKeySet;
-    }
-
-    public Stack<K> keyStack() {
-        KeyToStack ks = new KeyToStack();
-        inorderTraverse(root, ks);
-        return ks.myKeyStack;
     }
 
     /** Removes KEY from the tree if present
@@ -228,10 +226,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             x.right = remove(x.right, key);
         } else { // found the node to be removed
             if (x.right == null) { // first case: x has only left child
-                x = x.left; //?? return (x.left) will not update x.size??
+                return x.left; // x.left.size does not need to be updated
             }
             if (x.left == null) { // second case: x has only right child
-                x = x.right;
+                return x.right;
             }
             // third case: x has both left and right children
             Node t = x; // save a link to the node to be deleted in t
@@ -253,7 +251,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     private Node min(Node x) {
         if (x.left == null) { // base caser
             return x;
-        }else { // recursion
+        } else { // recursion
             return min(x.left);
         }
     }
@@ -265,12 +263,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         return ss.iterator(); // use the iterator of the stack class
     }
 
+    // Future projects: implement BST iterator by tracking the next node to be visited.
+    // See Hilfinger's Data Structure into Java pp104
+
     public static void main(String[] args) {
         BSTMap<String, Integer> bstmap = new BSTMap<>();
         bstmap.put("hello", 5);
         bstmap.put("cat", 10);
         bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
+        bstmap.put("hippo", 30);
+        bstmap.put("giraffe", 28);
+        bstmap.put("turtle", 60);
         // System.out.println(bstmap.keySet());
 //        Iterator see = bstmap.iterator();
 //        while (see.hasNext()) {
@@ -279,5 +283,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         for (String ss : bstmap) {
             System.out.println(ss);
         }
+        System.out.println(bstmap.size());
+        bstmap.remove("zebra");
+        System.out.println(bstmap.size());
+
     }
 }
