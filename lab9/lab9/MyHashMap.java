@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
 
-    private static final int DEFAULT_SIZE = 16;
+    private static final int DEFAULT_SIZE = 2;
     private static final double MAX_LF = 0.75;
 
     private ArrayMap<K, V>[] buckets;
@@ -53,19 +53,41 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        if (key == null) throw new IllegalArgumentException("key cannot be null");
+        return buckets[hash(key)].get(key);
     }
 
     /* Associates the specified value with the specified key in this map. */
+    // cornercase not accounted for: if value is null, should call delete();
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (key == null) throw new IllegalArgumentException("key cannot be null");
+        if (!containsKey(key)) {
+            size += 1;
+        }
+        buckets[hash(key)].put(key, value);
+
+        if (size*1.0/buckets.length >= MAX_LF) {
+            resize(buckets.length * 2);
+        }
+    }
+
+    @Override
+    public boolean containsKey(K key) {
+        if (key == null) throw new IllegalArgumentException("argument to contains() is null");
+        return get(key) != null;
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return this.size;
+    }
+
+    private void resize(int m) {
+        ArrayMap<K, V>[] newbuckets = new ArrayMap[m];
+        System.arraycopy(buckets, 0, newbuckets, 0, size);
+        buckets = newbuckets;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
@@ -95,5 +117,15 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public Iterator<K> iterator() {
         throw new UnsupportedOperationException();
+    }
+
+    public static void main(String[] args) {
+        MyHashMap<String, Integer> hashmap = new MyHashMap<>();
+        hashmap.put("hello", 5);
+        hashmap.put("cat", 10);
+        hashmap.put("fish", 22);
+        System.out.println(hashmap.size());
+        System.out.println(hashmap.get("cat"));
+
     }
 }
