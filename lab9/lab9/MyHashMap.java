@@ -10,8 +10,8 @@ import java.util.Set;
  *  @author Your name here
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
-
-    private static final int DEFAULT_SIZE = 2;
+    // do I need to resize ArrayMap.keys and values???
+    private static final int DEFAULT_SIZE = 16;
     private static final double MAX_LF = 0.75;
 
     private ArrayMap<K, V>[] buckets;
@@ -43,10 +43,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (key == null) {
             return 0;
         }
-
         int numBuckets = buckets.length;
         return Math.floorMod(key.hashCode(), numBuckets);
     }
+
+    private int hash(K key, int m) {
+        if (key == null) {
+            return 0;
+        }
+        int numBuckets = m;
+        return Math.floorMod(key.hashCode(), numBuckets);
+    }
+
 
     /* Returns the value to which the specified key is mapped, or null if this
      * map contains no mapping for the key.
@@ -54,6 +62,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public V get(K key) {
         if (key == null) throw new IllegalArgumentException("key cannot be null");
+//        System.out.println(key.hashCode());
+//        System.out.println(hash(key));
         return buckets[hash(key)].get(key);
     }
 
@@ -86,7 +96,22 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     private void resize(int m) {
         ArrayMap<K, V>[] newbuckets = new ArrayMap[m];
-        System.arraycopy(buckets, 0, newbuckets, 0, size);
+        // FF: it is crucial to initialize each newbucket individually; or nullpointerexception.
+        for (int i = 0; i < m; i++) {
+            newbuckets[i] = new ArrayMap<>();
+        }
+
+        // FF: cannot just System.arraycopy(buckets, 0, newb, 0, size);
+        // Need to recomputate the hash index for each element!
+        // Alternatively, MyHashMap<K,V> temp = new MyHashMap<>(m) but this will require the writing of a new constructor
+        for (int i = 0; i < buckets.length; i++) {
+            for (K key : buckets[i].keySet()) {
+                int index = hash(key, m);
+                V val = buckets[i].get(key);
+                ArrayMap<K,V> temp = newbuckets[index];
+                temp.put(key,val);
+            }
+        }
         buckets = newbuckets;
     }
 
