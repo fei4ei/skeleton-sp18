@@ -261,6 +261,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     public Iterator<K> iterator() {
         Stack ss = keyStack();
         return ss.iterator(); // use the iterator of the stack class
+        // alternatively, return keySet().iterator();
     }
 
     // Future projects: implement BST iterator by tracking the next node to be visited.
