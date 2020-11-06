@@ -159,7 +159,20 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         }
     }
 
+    class printNode implements Action {
+        @Override
+        public void visit(BSTMap.Node T) {
+            System.out.println(T.key + ":" + T.value);
+        }
+    }
+
+    // print out key:value pair of all nodes originating from T as root
+    public void printTree(Node T) {
+        inorderTraverse(T, new printNode());
+    }
+
     /* Returns a Set view of the keys contained in this map. */
+    // update: another idea is to add keyset, an object of hashset, as a field to BSTMap. Accessing keyset will be O(1)
     @Override
     public Set<K> keySet() {
         KeyToSet as = new KeyToSet();
@@ -216,7 +229,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
 
     // page 411 of Sedgewick Algorithm
     private Node remove(Node x, K key) {
-        if (x == null) { // base case #1
+        if (x == null) { // base case #1: search down to the leaf and did not find key
             return null;
         }
         int cp = key.compareTo(x.key);
@@ -226,9 +239,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             x.right = remove(x.right, key);
         } else { // found the node to be removed
             if (x.right == null) { // first case: x has only left child
+                if (x == root) root = x.left; //corner case: delete the root
                 return x.left; // x.left.size does not need to be updated
             }
             if (x.left == null) { // second case: x has only right child
+                if (x == root) root = x.right; //corner case: delete the root
                 return x.right;
             }
             // third case: x has both left and right children
@@ -236,6 +251,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             x = min(t.right); // set x to point to its successor min(t.right)
             x.right = deleteMin(t.right); // set the right link of x to deleteMin(t.right)
             x.left = t.left; // set the left link of x (which was not null) to t.left
+            if (t == root) root = x;
         }
         x.size = size(x.left) + size(x.right) + 1;
         return x;
@@ -256,7 +272,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         }
     }
 
-
     @Override
     public Iterator<K> iterator() {
         Stack ss = keyStack();
@@ -271,22 +286,23 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         BSTMap<String, Integer> bstmap = new BSTMap<>();
         bstmap.put("hello", 5);
         bstmap.put("cat", 10);
-        bstmap.put("fish", 22);
+//        bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
         bstmap.put("hippo", 30);
-        bstmap.put("giraffe", 28);
-        bstmap.put("turtle", 60);
-        // System.out.println(bstmap.keySet());
+//        bstmap.put("giraffe", 28);
+//        bstmap.put("turtle", 60);
+//         System.out.println(bstmap.keySet());
 //        Iterator see = bstmap.iterator();
 //        while (see.hasNext()) {
 //            System.out.println(see.next());
 //        }
-        for (String ss : bstmap) {
-            System.out.println(ss);
-        }
+//        for (String ss : bstmap) {
+//            System.out.println(ss);
+//        }
+//        bstmap.deleteMin(bstmap.root.right);
+//        bstmap.deleteMin(bstmap.root);
         System.out.println(bstmap.size());
-        bstmap.remove("zebra");
+        bstmap.remove(bstmap.root, "hello");
         System.out.println(bstmap.size());
-
     }
 }
