@@ -36,10 +36,33 @@ public class TestSimpleOomage {
         SimpleOomage ooA = new SimpleOomage(5, 10, 20);
         SimpleOomage ooA2 = new SimpleOomage(5, 10, 20);
         SimpleOomage ooB = new SimpleOomage(50, 50, 50);
+        SimpleOomage ooC = new SimpleOomage(0, 0, 155);
+        SimpleOomage ooD = new SimpleOomage(0, 5, 0);
         assertEquals(ooA, ooA2);
         assertNotEquals(ooA, ooB);
         assertNotEquals(ooA2, ooB);
         assertNotEquals(ooA, "ketchup");
+        assertNotEquals(ooC, ooD);
+    }
+
+    @Test
+    public void testUniqueHashCode() {
+        HashSet<Integer> values = new HashSet<>();
+        boolean AC = false;
+        for (int i = 0; i <= 51 && AC == false; i += 1) {
+            for (int j = 0; j <= 51 && AC == false; j += 1) {
+                for (int w = 0; w <= 51 && AC == false; w += 1) {
+                    SimpleOomage oox = new SimpleOomage(i*5, j*5, w*5);
+                    if (values.contains(oox.hashCode())) {
+                        AC = true;
+                        System.out.println("r: " + i + "g: " + j + "b: " + w);
+                        break;
+                    }
+                    values.add(oox.hashCode());
+                }
+            }
+        }
+        assertEquals(AC, false);
     }
 
 
@@ -61,8 +84,7 @@ public class TestSimpleOomage {
         for (int i = 0; i < N; i += 1) {
             oomages.add(SimpleOomage.randomSimpleOomage());
         }
-
-        assertTrue(OomageTestUtility.haveNiceHashCodeSpread(oomages, 10));
+        assertTrue(OomageTestUtility.haveNiceHashCodeSpread(oomages, 5));
     }
 
     /** Calls tests for SimpleOomage. */
