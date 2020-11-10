@@ -167,6 +167,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     }
 
     // print out key:value pair of all nodes originating from T as root
+    // FF: could improve upon the code to print a tree-like structures for key-value pairs
     public void printTree(Node T) {
         inorderTraverse(T, new printNode());
     }
@@ -285,10 +286,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
     public static void main(String[] args) {
         BSTMap<String, Integer> bstmap = new BSTMap<>();
         bstmap.put("hello", 5);
-        bstmap.put("cat", 10);
+//        bstmap.put("cat", 10);
 //        bstmap.put("fish", 22);
-        bstmap.put("zebra", 90);
-        bstmap.put("hippo", 30);
+//        bstmap.put("zebra", 90);
+//        bstmap.put("hippo", 30);
 //        bstmap.put("giraffe", 28);
 //        bstmap.put("turtle", 60);
 //         System.out.println(bstmap.keySet());

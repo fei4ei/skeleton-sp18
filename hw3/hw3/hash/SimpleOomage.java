@@ -10,26 +10,29 @@ public class SimpleOomage implements Oomage {
     protected int blue;
 
     private static final double WIDTH = 0.01;
-    private static final boolean USE_PERFECT_HASH = false;
+    private static final boolean USE_PERFECT_HASH = true;
 
+
+    // default equals checks to see if two objects pointed to the same memory address
     @Override
     public boolean equals(Object o) {
-        // TODO: Write this method.
-        return false;
+        if (o == this) return true;
+        if (o == null) return false;
+        if (o.getClass() != this.getClass())  return false; // getClass() returns the runtime class of an object
+        SimpleOomage other = (SimpleOomage) o; // cast type object to type SimgpleOomage
+        return (this.red == other.red) && (this.blue == other.blue) && (this.green == other.green);
     }
 
-    /* Uncomment this method after you've written
-       equals and failed the testHashCodeAndEqualsConsistency
-       test.
+    // default hashCode() returns the memory addresses; it is general necessary to override hashCode() whenever equals() is overriden
     @Override
     public int hashCode() {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
             // TODO: Write a perfect hash function for Simple Oomages.
-            return 0;
+            return red*31*31 + green*31 + blue;
         }
-    }*/
+    }
 
     public SimpleOomage(int r, int g, int b) {
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
@@ -45,6 +48,7 @@ public class SimpleOomage implements Oomage {
 
     @Override
     public void draw(double x, double y, double scalingFactor) {
+//      constructor Color(int r, int g, int b) creates an opaque sRGB color R, G, B values between 0 and 255.
         StdDraw.setPenColor(new Color(red, green, blue));
         StdDraw.filledSquare(x, y, WIDTH * scalingFactor);
     }
