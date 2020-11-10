@@ -31,7 +31,7 @@ public class SimpleOomage implements Oomage {
         } else {
             // TODO: Write a perfect hash function for Simple Oomages.
             // java represents ints as 32 digits numbers. 51 = 0b110011
-            return red/5*1023*1023 + green/5*1023 + blue/5;
+            return red/5*1021*1021 + green/5*1021 + blue/5;
         }
     }
 
