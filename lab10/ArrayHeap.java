@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.Stack;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -464,7 +465,17 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         String rem = pq.removeMin();
         System.out.println(pq);
         assertEquals("c", rem);
+        Stack<String> collect = new Stack<>();
+        collect.push(rem);
 
+        pq.insert("a", 1);
+        pq.insert("z", 26);
+        rem = pq.removeMin();
+        collect.push(rem);
+        rem = pq.removeMin();
+        collect.push(rem);
+
+        System.out.println(collect);
     }
 
 }
