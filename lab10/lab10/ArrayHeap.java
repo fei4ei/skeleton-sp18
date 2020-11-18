@@ -1,3 +1,4 @@
+package lab10;
 import edu.princeton.cs.algs4.Stack;
 import org.junit.Test;
 import static org.junit.Assert.*;
