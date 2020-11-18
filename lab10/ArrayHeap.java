@@ -108,7 +108,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         validateSinkSwimArg(index);
 
         /** TODO: Your code here. */
-        while ((getNode(index).priority() < getNode(parentIndex(index)).priority()) || index > 1) {
+        while ((index > 1) && (getNode(index).priority() < getNode(parentIndex(index)).priority())) {
             // parentIndex(index) > 0
             swap(index, parentIndex(index));
             index = parentIndex(index);
@@ -124,10 +124,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         validateSinkSwimArg(index);
 
         /** TODO: Your code here. */
-        while (min(leftIndex(index), rightIndex(index)) <= size &&
-                getNode(index).priority() > getNode(min(leftIndex(index), rightIndex(index))).priority()) {
+        int minc = min(leftIndex(index), rightIndex(index)); // minc stores the index of the child with a lower mypriority.
+        while (minc <= size &&
+                getNode(index).priority() > getNode(minc).priority()) {
             swap(index, min(leftIndex(index), rightIndex(index)));
-            index = min(leftIndex(index), rightIndex(index));
+//            minc = min(leftIndex(index), rightIndex(index)); // FF mistake: after swapping, minc value will change undesirably!
+            index = minc;
+            minc = min(leftIndex(index), rightIndex(index));
         }
         return;
     }
