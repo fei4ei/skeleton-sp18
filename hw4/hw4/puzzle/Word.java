@@ -70,7 +70,6 @@ public class Word implements WorldState {
         return costs[b.length()];
     }
 
-
     @Override
     public Iterable<WorldState> neighbors() {
         Set<WorldState> neighbs = new HashSet<>();
