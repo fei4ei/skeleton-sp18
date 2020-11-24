@@ -6,7 +6,7 @@ public class WordPuzzleSolver {
      * Test routine for your Solver class. Uncomment and run to test
      * your basic functionality.
      **********************************************************************/
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         String start = "cube";
         String goal = "tubes";
 
@@ -15,7 +15,7 @@ public class WordPuzzleSolver {
 
         StdOut.println("Minimum number of moves = " + solver.moves());
         for (WorldState ws : solver.solution()) {
-            StdOut.println(ws);
+            StdOut.println(ws.toString());
         }
-    }*/
+    }
 }

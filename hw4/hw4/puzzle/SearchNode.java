@@ -6,7 +6,7 @@ import java.util.Comparator;
 
 public class SearchNode implements WorldState{
     WorldState ws;
-    int NumberOfMoves; // he number of moves made to reach this world state from the initial state.
+    int NumberOfMoves; // the number of moves made to reach this world state from the initial state.
     SearchNode Prev; // reference to the previous node
 
     public SearchNode(WorldState input) {
@@ -43,21 +43,11 @@ public class SearchNode implements WorldState{
         return ws.neighbors();
     }
 
-    public static MinPQ<SearchNode> creatPQ(WorldState inputstate) {
+    public static MinPQ<SearchNode> createPQ(WorldState inputstate) {
         MinPQ<SearchNode> fringe = new MinPQ<>(SNComparator()); // SNComparator supplies the order in which to compare the keys
         SearchNode inputnode = new SearchNode(inputstate);
         fringe.insert(inputnode);
         return fringe;
     }
 
-    public static void Astar(MinPQ<SearchNode> fringe, SearchNode goal) {
-        while (!fringe.isEmpty()) {
-            SearchNode curr = fringe.delMin();
-            if (curr == goal) return;
-            for (WorldState w : curr.neighbors()) {
-                SearchNode nb = new SearchNode(w, curr.NumberOfMoves + 1, curr);
-                fringe.insert(nb);
-            }
-        }
-    }
 }
