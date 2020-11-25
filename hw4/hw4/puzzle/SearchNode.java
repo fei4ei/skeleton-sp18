@@ -50,4 +50,16 @@ public class SearchNode implements WorldState{
         return fringe;
     }
 
+    public boolean wsEquals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SearchNode onode = (SearchNode) o;
+        return (this.ws.equals(onode.ws));
+    }
+
 }

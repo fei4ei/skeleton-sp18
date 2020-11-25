@@ -13,6 +13,7 @@ public class Solver {
     int NumOfMoves = -1;
     SearchNode target = null;
     MinPQ<SearchNode> fringe;
+    int TotalEnqueued = 0;
 
     public Solver(WorldState Start_Goal) {
         fringe = SearchNode.createPQ(Start_Goal);
@@ -26,8 +27,9 @@ public class Solver {
             }
             for (WorldState w : curr.neighbors()) {
                 SearchNode nb = new SearchNode(w, curr.NumberOfMoves + 1, curr);
-                if (!nb.equals(curr.Prev)) { // optimization: don't add the grandparents
+                if (!nb.wsEquals(curr.Prev)) { // optimization: don't add the grandparents
                     fringe.insert(nb);
+                    TotalEnqueued += 1;
                 }
             }
         }
@@ -54,4 +56,5 @@ public class Solver {
         }
         return path;
     }
+
 }
