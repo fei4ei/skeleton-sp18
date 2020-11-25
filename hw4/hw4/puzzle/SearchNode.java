@@ -8,24 +8,25 @@ public class SearchNode implements WorldState{
     WorldState ws;
     int NumberOfMoves; // the number of moves made to reach this world state from the initial state.
     SearchNode Prev; // reference to the previous node
-
-    public SearchNode(WorldState input) {
-        ws = input;
-        NumberOfMoves = 0;
-        Prev = null;
-    }
+    int edtg = 0;
 
     public SearchNode(WorldState input, int nom, SearchNode previous) {
         ws = input;
         NumberOfMoves = nom;
         Prev = previous;
+        edtg = estimatedDistanceToGoal();
+    }
+
+    public SearchNode(WorldState input) {
+        this(input, 0, null);
     }
 
     private static class SearchNodeComparator implements Comparator<SearchNode> {
         @Override
         public int compare(SearchNode o, SearchNode p) {
-            return (o.NumberOfMoves + o.ws.estimatedDistanceToGoal()) -
-                    (p.NumberOfMoves + p.ws.estimatedDistanceToGoal());
+//            return (o.NumberOfMoves + o.ws.estimatedDistanceToGoal()) -
+//                    (p.NumberOfMoves + p.ws.estimatedDistanceToGoal());
+            return (o.NumberOfMoves + o.edtg) - (p.NumberOfMoves + p.edtg);
         }
     }
 
