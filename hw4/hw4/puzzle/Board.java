@@ -8,14 +8,52 @@ public class Board implements WorldState {
      * where tiles[i][j] = tile at row i, column j
      * @param tiles
      */
-    private int size;
+    private int size; // size = N
     private int[][] Tiles;
     private int[][] Goal;
-    private final int BLANK = 0; // this is the blank spot in the board that can be moved into
+    private final int BLANK = 0; // this is the blank square in the board
 
     public Board(int[][] tiles) {
         size = tiles.length;
         Tiles = tiles;
+        Goal = new int[size][size];
+        GoalMaker(size);
+    }
+
+    /** Generate an N-by-N array as the Goal; if N = 3, Goal =
+     *
+     * @param N
+     */
+    private void GoalMaker(int N) {
+        int filler = 1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Goal[i][j] = filler;
+                filler += 1;
+            }
+        }
+        Goal[size-1][size-1] = BLANK;
+    }
+
+    /** Return index [i, j] of a value in the Goal array
+     *
+     */
+    private int[] indexFinder(int value) {
+        checkValueValidity(value);
+        if (value == 0) {
+            return new int[]{size - 1, size - 1};
+        }
+        int rowNum;
+        int colNum;
+        colNum = (value - 1) % size;
+        rowNum = (value - 1) / size;
+        return new int[]{rowNum, colNum};
+    }
+
+    private void checkValueValidity(int value) {
+        if (value > size*size - 1 || value < 0) {
+            throw new java.lang.IndexOutOfBoundsException();
+        }
     }
 
     /** Returns value of tile at row i, column j(or 0 if blank)
@@ -24,6 +62,7 @@ public class Board implements WorldState {
      * @return
      */
     public int tileAt(int i, int j) {
+        checkValueValidity(Tiles[i][j]);
         return Tiles[i][j];
     }
 
@@ -78,18 +117,37 @@ public class Board implements WorldState {
         }
         return neighbors;
     }
-    /** Hamming estimate described below
+    /** Hamming distance estimate: the number of tiles in the wrong position
      */
     public int hamming() {
-        return 0;
+        int Hdist = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (Goal[i][j] != Tiles[i][j]) {
+                    Hdist += 1;
+                }
+            }
+        }
+        return Hdist;
     }
 
-    /** Manhattan estimate described below
+    /** Manhattan distance estimate: the sum of vertical and horizontal distance from the tiles to their goal positions
      *
      * @return
      */
     public int manhattan() {
-        return 0;
+        int Mdist = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (Goal[i][j] == Tiles[i][j]) {
+                    continue;
+                }
+                int value = Tiles[i][j];
+                int[] index = indexFinder(value);
+                Mdist += (index[0] - i) + (index[1] - j);
+            }
+        }
+        return Mdist;
     }
 
     /** Returns true if this board's tile values are the
@@ -98,7 +156,19 @@ public class Board implements WorldState {
      * @return
      */
     public boolean equals(Object y) {
-        return false;
+        if (this == y) return true;
+        if (this.getClass() != y.getClass()) return false;
+        Board nb = (Board) y;
+        if (this == null && y != null) return false;
+        if (this != null && y == null) return false;
+        if (this == null && y == null) return true;
+        if (nb.size != this.size) return false;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (this.Tiles[i][j] != nb.Tiles[i][j] || this.Goal[i][j] != nb.Goal[i][j]) return false;
+            }
+        }
+        return true;
     }
 
     /** Returns the string representation of the board. 
