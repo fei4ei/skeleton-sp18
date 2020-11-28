@@ -26,10 +26,10 @@ public class EightPuzzleSolver {
         for (WorldState w : initial.neighbors()) {
             System.out.println(w.toString());
         }
-//        Solver solver = new Solver(initial);
-//        StdOut.println("Minimum number of moves = " + solver.moves());
-//        for (WorldState ws : solver.solution()) {
-//            StdOut.println(ws);
-//        }
+        Solver solver = new Solver(initial);
+        StdOut.println("Minimum number of moves = " + solver.moves());
+        for (WorldState ws : solver.solution()) {
+            StdOut.println(ws);
+        }
     }
 }

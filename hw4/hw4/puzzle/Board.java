@@ -17,9 +17,20 @@ public class Board implements WorldState {
 
     public Board(int[][] tiles) {
         size = tiles.length;
-        Tiles = tiles;
+        Tiles = CopyTile(tiles);
         Goal = new int[size][size];
         GoalMaker(size);
+    }
+
+    private int[][] CopyTile(int[][] tiles) {
+        int[][] myTiles = new int[size][size];
+        for (int i = 0; i < size; i++) {
+//            for (int j = 0; j < size; j++) {
+//                myTiles[i][i] = tiles[i][j]; //FF: why is it not working???
+//            }
+            System.arraycopy(tiles[i], 0, myTiles[i], 0, size);
+        }
+        return myTiles;
     }
 
     /** Generate an N-by-N array as the Goal; if N = 3, Goal =
