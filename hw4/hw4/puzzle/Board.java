@@ -3,14 +3,16 @@ package hw4.puzzle;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 
+import java.util.Arrays;
+
 public class Board implements WorldState {
     /** Constructs a board from a N-by-N array of tiles
      * where tiles[i][j] = tile at row i, column j
      * @param tiles
      */
     private int size; // size = N
-    private int[][] Tiles;
-    private int[][] Goal;
+    int[][] Tiles;
+    int[][] Goal;
     private final int BLANK = 0; // this is the blank square in the board
 
     public Board(int[][] tiles) {
@@ -92,8 +94,8 @@ public class Board implements WorldState {
         for (int rug = 0; rug < hug; rug++) {
             for (int tug = 0; tug < hug; tug++) {
                 if (tileAt(rug, tug) == BLANK) {
-                    bug = rug;
-                    zug = tug;
+                    bug = rug; // bug: row num of BLANK in Tiles
+                    zug = tug; // zug: col num of BLANK in Tiles
                 }
             }
         }
@@ -105,12 +107,14 @@ public class Board implements WorldState {
         }
         for (int l11il = 0; l11il < hug; l11il++) {
             for (int lil1il1 = 0; lil1il1 < hug; lil1il1++) {
-                if (Math.abs(-bug + l11il) + Math.abs(lil1il1 - zug) - 1 == 0) {
+                if (Math.abs(l11il - bug) + Math.abs(lil1il1 - zug) - 1 == 0) { // found a neighbor
+//                    int[][] copy = new int[hug][hug];
+//                    copy = ili1li1.clone();
                     ili1li1[bug][zug] = ili1li1[l11il][lil1il1];
                     ili1li1[l11il][lil1il1] = BLANK;
                     Board neighbor = new Board(ili1li1);
                     neighbors.enqueue(neighbor);
-                    ili1li1[l11il][lil1il1] = ili1li1[bug][zug];
+                    ili1li1[l11il][lil1il1] = ili1li1[bug][zug]; // problem: this will change the array just enqueued in neighbors
                     ili1li1[bug][zug] = BLANK;
                 }
             }
@@ -123,6 +127,9 @@ public class Board implements WorldState {
         int Hdist = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
+                if (Tiles[i][j] == BLANK) {
+                    continue;
+                }
                 if (Goal[i][j] != Tiles[i][j]) {
                     Hdist += 1;
                 }
@@ -139,12 +146,16 @@ public class Board implements WorldState {
         int Mdist = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (Goal[i][j] == Tiles[i][j]) {
+                if (Tiles[i][j] == BLANK) {
                     continue;
                 }
-                int value = Tiles[i][j];
-                int[] index = indexFinder(value);
-                Mdist += (index[0] - i) + (index[1] - j);
+                if (Goal[i][j] != Tiles[i][j]) {
+                    int value = Tiles[i][j];
+                    int[] index = indexFinder(value);
+//                    System.out.println(Tiles[i][j] + " @ Goal: " + Arrays.toString(index));
+//                    System.out.println(Tiles[i][j] + " @ Tile: [" + i + ", " + j + "]");
+                    Mdist += Math.abs(index[0] - i) + Math.abs(index[1] - j);
+                }
             }
         }
         return Mdist;
@@ -180,6 +191,20 @@ public class Board implements WorldState {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 s.append(String.format("%2d ", tileAt(i,j)));
+            }
+            s.append("\n");
+        }
+        s.append("\n");
+        return s.toString();
+    }
+
+    public String GoaltoString() {
+        StringBuilder s = new StringBuilder();
+        int N = size();
+        s.append(N + "\n");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                s.append(String.format("%2d ", Goal[i][j]));
             }
             s.append("\n");
         }
