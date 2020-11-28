@@ -11,8 +11,8 @@ public class Board implements WorldState {
      * @param tiles
      */
     private int size; // size = N
-    int[][] Tiles;
-    int[][] Goal;
+    private int[][] Tiles;
+    private int[][] Goal;
     private final int BLANK = 0; // this is the blank square in the board
 
     public Board(int[][] tiles) {
@@ -179,11 +179,8 @@ public class Board implements WorldState {
      */
     public boolean equals(Object y) {
         if (this == y) return true;
-        if (this.getClass() != y.getClass()) return false;
+        if (y == null || this.getClass() != y.getClass()) return false;
         Board nb = (Board) y;
-        if (this == null && y != null) return false;
-        if (this != null && y == null) return false;
-        if (this == null && y == null) return true;
         if (nb.size != this.size) return false;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -209,7 +206,7 @@ public class Board implements WorldState {
         return s.toString();
     }
 
-    public String GoaltoString() {
+    private String GoaltoString() {
         StringBuilder s = new StringBuilder();
         int N = size();
         s.append(N + "\n");
@@ -221,6 +218,11 @@ public class Board implements WorldState {
         }
         s.append("\n");
         return s.toString();
+    }
+
+    public int hashCode() {
+        int result = Tiles != null ? Tiles.hashCode() : 0;
+        return result;
     }
 
 

@@ -10,10 +10,10 @@ public class Solver {
      * for moves() and solution() to not have to solve the problem again.
      * Solves the puzzle using the A* algorithm. Assumes a solution exists.
     */
-    int NumOfMoves = -1;
-    SearchNode target = null;
-    MinPQ<SearchNode> fringe;
-    int TotalEnqueued = 0;
+    private int NumOfMoves = -1;
+    private SearchNode target = null;
+    private MinPQ<SearchNode> fringe;
+    private int TotalEnqueued = 0;
 
     public Solver(WorldState Start_Goal) {
         fringe = SearchNode.createPQ(Start_Goal);
