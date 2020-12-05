@@ -20,7 +20,7 @@ public class EightPuzzleSolver {
         }
         Board initial = new Board(tiles);
         System.out.println(initial.toString());
-        System.out.println(initial.GoaltoString());
+//        System.out.println(initial.GoaltoString());
         System.out.println("Mdist: " + initial.manhattan());
         System.out.println("Hdist: " + initial.hamming());
         for (WorldState w : initial.neighbors()) {

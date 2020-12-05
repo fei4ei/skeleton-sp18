@@ -8,7 +8,7 @@ public class SearchNode implements WorldState{
     WorldState ws;
     int NumberOfMoves; // the number of moves made to reach this world state from the initial state.
     SearchNode Prev; // reference to the previous node
-    int edtg = 0;
+    int edtg = 0; // caching
 
     public SearchNode(WorldState input, int nom, SearchNode previous) {
         ws = input;
