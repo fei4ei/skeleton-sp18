@@ -225,7 +225,6 @@ public class Maze implements Observer {
         west = new boolean[N + 2][N + 2];
     }
 
-
     // generate the maze
     private void generateSingleGapMaze(int x, int y, boolean[][] marked) {
 
@@ -282,7 +281,6 @@ public class Maze implements Observer {
 
         generateSingleGapMaze(1, 1, marked);
     }
-
 
     private void generatePopenSolvableMaze(double pOpen) {
         // initialize all walls as present
@@ -393,7 +391,6 @@ public class Maze implements Observer {
         }
     }
 
-
     private void drawEdges(int i, MazeExplorer me) {
         int x = toX(i);
         int y = toY(i);
@@ -465,7 +462,6 @@ public class Maze implements Observer {
         MazeExplorer mdfp = new MazeCycles(maze);
         mdfp.solve();
     }*/
-
 
     private int N;                 // dimension of maze
     private boolean[][] north;     // is there a wall to north of cell i, j
