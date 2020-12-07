@@ -23,9 +23,6 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
         maze = m;
         s = maze.xyTo1D(sourceX, sourceY);
         t = maze.xyTo1D(targetX, targetY);
-        distTo[s] = 0;
-        edgeTo[s] = s;
-        marked[s] = true;
     }
 
     /** Conducts a breadth first search of the maze starting at the source. */
@@ -36,6 +33,9 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
         for (int v = 0; v < maze.V(); v++) {
             distTo[v] = infinity;
         }
+        distTo[s] = 0;
+        edgeTo[s] = s;
+        marked[s] = true;
         q.enqueue(s);
         while (!q.isEmpty()) {
             int v = q.dequeue();
@@ -44,7 +44,7 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
                     edgeTo[i] = v;
                     distTo[i] = distTo[v] + 1;
                     marked[i] = true;
-                    if (i == t) { // need announce()?
+                    if (i == t) {
                         announce();
                         return;
                     }

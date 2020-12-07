@@ -88,7 +88,6 @@ public class Maze implements Observer {
         return (y - 1) * N + (x - 1);
     }
 
-
     // returns true if wall exists
     private boolean wallExists(int x, int y, String s) {
         int tx = targetX(x, s);
