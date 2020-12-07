@@ -12,7 +12,7 @@ public class MazeAStarPath extends MazeExplorer {
     private int t;
     private boolean targetFound = false;
     private Maze maze;
-    private MinPQ<Integer> fringe = new MinPQ<>();
+//    private MinPQ<Integer> fringe = new MinPQ<>();
 
 
     public MazeAStarPath(Maze m, int sourceX, int sourceY, int targetX, int targetY) {
@@ -44,7 +44,24 @@ public class MazeAStarPath extends MazeExplorer {
 
     /** Performs an A star search from vertex s. */
     private void astar(int s) {
-        // TODO
+        MinPQ<Integer> fringe = new MinPQ(new MazeComparator());
+        fringe.insert(s);
+        marked[s] = true;
+        while (!fringe.isEmpty()) {
+            int curr = fringe.delMin();
+            if (curr == t) {
+                announce();
+                break;
+            }
+            for (int i : maze.adj(curr)) {
+                if(!marked[i]) {
+                    fringe.insert(i);
+                    distTo[i] = distTo[curr] + 1;
+                    edgeTo[i] = curr;
+                    marked[i] = true;
+                }
+            }
+        }
 
     }
 

@@ -17,7 +17,6 @@ public class MazeCycles extends MazeExplorer {
     // page 547 textbook
     private boolean cycleFound = false;
     private int[] myedgeTo;
-    private Stack<Integer> s = new Stack<>();
     private HashSet h = new HashSet();
 
     public MazeCycles(Maze m) {
