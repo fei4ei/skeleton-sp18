@@ -3,6 +3,7 @@ package lab11.graphs;
 import edu.princeton.cs.algs4.Stack;
 
 import javax.xml.stream.FactoryConfigurationError;
+import java.util.HashSet;
 
 /**
  *  @author Josh Hug
@@ -15,12 +16,19 @@ public class MazeCycles extends MazeExplorer {
     */
     // page 547 textbook
     private boolean cycleFound = false;
+    private int[] myedgeTo;
+    private Stack<Integer> s = new Stack<>();
+    private HashSet h = new HashSet();
 
     public MazeCycles(Maze m) {
         super(m);
         maze = m;
         distTo[0] = 0;
         edgeTo[0] = 0;
+        myedgeTo = new int[maze.V()];
+        for (int i = 0; i < maze.V(); i += 1) {
+            myedgeTo[i] = Integer.MAX_VALUE;
+        }
     }
 
     @Override
@@ -43,13 +51,17 @@ public class MazeCycles extends MazeExplorer {
 
         for (int w : maze.adj(v)) {
             if (!marked[w]) {
-                // edgeTo[w] = v;
+                myedgeTo[w] = v;
                 distTo[w] = distTo[v] + 1;
                 dfsCycle(w, v);
             }
             else if (w != u) { // w is already visited but the parent of v
                 cycleFound = true;
-                // edgeTo[w] = v;
+                myedgeTo[w] = v;
+                for (int i = w; !h.contains(i); i = myedgeTo[i]) {
+                    edgeTo[i] = myedgeTo[i];
+                    h.add(i);
+                }
                 announce();
                 return;
             }
