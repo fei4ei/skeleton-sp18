@@ -1,6 +1,7 @@
 package lab11.graphs;
 
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Queue;
 
 import java.util.Comparator;
 
@@ -12,6 +13,7 @@ public class MazeAStarPath extends MazeExplorer {
     private int t;
     private boolean targetFound = false;
     private Maze maze;
+    private static final int infinity = Integer.MAX_VALUE;
 //    private MinPQ<Integer> fringe = new MinPQ<>();
 
 
@@ -38,6 +40,23 @@ public class MazeAStarPath extends MazeExplorer {
 
     /** Finds vertex estimated to be closest to target. */
     private int findMinimumUnmarked() {
+        Queue<Integer> q = new Queue<>();
+        for (int v = 0; v < maze.V(); v++) {
+            distTo[v] = infinity;
+        }
+        marked[t] = true;
+        q.enqueue(t); // bfs
+        while (!q.isEmpty()) {
+            int curr = q.dequeue();
+            for (int i : maze.adj(curr)) {
+                if (!marked[i]) {
+                    marked[i] = true;
+                    if (i == t) {
+                        return i;
+                    }
+                }
+            }
+        }
         return -1;
         /* You do not have to use this method. */
     }
