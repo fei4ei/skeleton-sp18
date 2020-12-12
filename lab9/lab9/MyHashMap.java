@@ -26,6 +26,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     public MyHashMap() {
         buckets = new ArrayMap[DEFAULT_SIZE];
+        // buckets = (ArrayMap<K, V>[]) new ArrayMap[DEFAULT_SIZE];
         this.clear();
         keyset = new HashSet<>();
     }

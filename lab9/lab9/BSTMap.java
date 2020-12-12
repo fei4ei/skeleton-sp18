@@ -252,7 +252,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
             x = min(t.right); // set x to point to its successor min(t.right)
             x.right = deleteMin(t.right); // set the right link of x to deleteMin(t.right)
             x.left = t.left; // set the left link of x (which was not null) to t.left
-            if (t == root) root = x;
+            if (t == root) root = x; //corner case
         }
         x.size = size(x.left) + size(x.right) + 1;
         return x;
