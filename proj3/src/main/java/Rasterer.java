@@ -51,13 +51,21 @@ public class Rasterer {
         double ullat = params.get("ullat");
         double lrlat = params.get("lrlat");
 
-        double[] pngres = pngRes();
+        double[] pngres = pngRes(); // generate an array of resolutions for different levels of png images
         for (int i = 0; i < pngres.length; i++) {
-            System.out.println("res at png level " + i + ": " + pngres[i]);
+            System.out.println("res at png level " + (i+1) + ": " + pngres[i]);
         }
 
-        double userres = userRes(params);
+        double userres = userRes(params); // calculate the resolution in the user query
         System.out.println("user res: " + userres);
+
+        int level = levelFinder(userres, pngres); // calculate the level of the png images needed for the user query
+        System.out.println("level: " + level);
+
+        int x1 = x1Num(ullon, level);
+        int x2 = x2Num(lrlon, level);
+        int y1 = y1Num(ullat, level);
+        int y2 = y2Num(lrlat, level);
 
         String[][] render_grid = new String[][]{{pngFinder(0, 0)}};
         results.put("render_grid", render_grid);
@@ -75,6 +83,14 @@ public class Rasterer {
         double resl7 = Math.abs(-122.2998046875 + 122.29843139648438) / 256; // level 7: d6_x0_y0.png
         double resl8 = Math.abs(-122.2998046875 + 122.29911804199219) / 256; // level 8: d7_x0_y0.png
         return new double[]{resl1, resl2, resl3, resl4, resl5, resl6, resl7, resl8};
+//        res at png level 1: 3.4332275390625E-4
+//        res at png level 2: 1.71661376953125E-4
+//        res at png level 3: 8.58306884765625E-5
+//        res at png level 4: 4.291534423828125E-5
+//        res at png level 5: 2.1457672119140625E-5
+//        res at png level 6: 1.0728836059570312E-5
+//        res at png level 7: 5.364418029785156E-6
+//        res at png level 8: 2.682209014892578E-6
     }
 
     private double userRes(Map<String, Double> params) {
@@ -84,6 +100,67 @@ public class Rasterer {
         double resolution = Math.abs(lrlon - ullon) / w;
         return resolution;
     }
+
+    private int levelFinder(double userres, double[] pngres) {
+        int pngLevel = -1;
+        if (userres < pngres[pngres.length-1]) {
+            pngLevel = pngres.length;
+        } else {
+            for (int i = 0; i < pngres.length; i++) {
+                if (userres < pngres[i]) {
+                    continue;
+                }
+                pngLevel = i + 1;
+            }
+        }
+        return pngLevel;
+    }
+
+    private static int x1Num(double ullon, int level) {
+        if (ullon <= MapServer.ROOT_ULLON) { // user requested urlon is outside the MapServer-provided images
+            return 0;
+        }
+        double width_root = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON);
+        double x1_user = Math.abs(MapServer.ROOT_ULLON - ullon);
+        int result = (int) ((x1_user/width_root)*Math.pow(2, level-1)); // x1_user/width_root / 0.25 for level 3
+        System.out.println("root width: " + width_root + "; x1_user: " + x1_user + "; x1 num: " + result);
+        return result;
+    }
+
+    private static int x2Num(double lrlon, int level) {
+        if (lrlon >= MapServer.ROOT_LRLON) { // user requested urlon is outside the MapServer-provided images
+            return (int) (Math.pow(2, level-1) - 1);
+        }
+        double width_root = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON);
+        double x2_user = Math.abs(MapServer.ROOT_ULLON - lrlon);
+        int result = (int) ((x2_user/width_root)*Math.pow(2, level-1)); // x2_user/width_root / 0.25 for level 3
+        System.out.println("root width: " + width_root + "; x2_user: " + x2_user + "; x2 num: " + result);
+        return result;
+    }
+
+    private static int y1Num(double ullat, int level) {
+        if (ullat >= MapServer.ROOT_ULLAT) { // user requested urlon is outside the MapServer-provided images
+            return 0;
+        }
+        double height_root = Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT);
+        double y1_user = Math.abs(MapServer.ROOT_ULLAT - ullat);
+        int result = (int) ((y1_user/height_root)*Math.pow(2, level-1)); // y1_user/height_root / 0.25 for level 3
+        System.out.println("root height: " + height_root + "; y1_user: " + y1_user + "; y1 num: " + result);
+        return result;
+    }
+
+    private static int y2Num(double lrlat, int level) {
+        if (lrlat <= MapServer.ROOT_LRLAT) { // user requested urlon is outside the MapServer-provided images
+            return (int) (Math.pow(2, level-1) - 1);
+        }
+        double height_root = Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT);
+        double y2_user = Math.abs(MapServer.ROOT_ULLAT - lrlat);
+        int result = (int) ((y2_user/height_root)*Math.pow(2, level-1)); // y1_user/height_root / 0.25 for level 3
+        System.out.println("root height: " + height_root + "; y2_user: " + y2_user + "; y2 num: " + result);
+        return result;
+    }
+
+
 
     private String pngFinder(int x, int y) {
         StringBuilder sb = new StringBuilder("d");
@@ -98,19 +175,28 @@ public class Rasterer {
     }
 
     public static void main(String[] args) {
+        // local test input
         Map<String, Double> input = new HashMap<>();
-        input.put("lrlon", -122.24053369025242);
+        input.put("lrlon", -122.24053369025242); // this set of parameters from test.html
         input.put("ullon", -122.24163047377972);
         input.put("w", 892.0);
         input.put("h", 875.0);
         input.put("ullat", 37.87655856892288);
         input.put("lrlat", 37.87548268822065);
         System.out.println("input is: " + input);
+
+        // create a Rasterer object
         Rasterer rasterer = new Rasterer();
         Map<String, Object> queryResult = rasterer.getMapRaster(input);
+
+        // test render_grid
         String[][] result = (String[][]) queryResult.get("render_grid");
         System.out.println("query result is: " + result[0][0]);
 
+        // test x1Num
+        int x1 = x1Num(-122.24163047377972,8);
+        int x2 = x2Num(-122.24053369025242, 8);
+        int y1 = y1Num(37.87655856892288, 8);
+        int y2 = y2Num(37.87548268822065, 8);
     }
-
 }
