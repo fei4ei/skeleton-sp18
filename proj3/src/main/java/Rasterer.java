@@ -67,7 +67,8 @@ public class Rasterer {
         int y1 = y1Num(ullat, level);
         int y2 = y2Num(lrlat, level);
 
-        String[][] render_grid = new String[][]{{pngFinder(0, 0)}};
+//        String[][] render_grid = new String[][]{{pngFinder(0, 0, level)}};
+        String[][] render_grid = gridGenerator(x1, x2, y1, y2, level);
         results.put("render_grid", render_grid);
         return results;
     }
@@ -160,17 +161,37 @@ public class Rasterer {
         return result;
     }
 
+    private static String[][] gridGenerator(int x1, int x2, int y1, int y2, int level) {
+        String[][] render_grid = new String[y2-y1+1][x2-x1+1];
+        for (int i = 0; i <= y2-y1; i++) {
+            for (int j = 0; j <= x2-x1; j++) {
+                render_grid[i][j] = pngFinder(j+x1, i+y1, level);
+            }
+        }
+        return render_grid;
+    }
 
+    private static void GridPrinter(String[][] render_grid) {
+        System.out.print("[");
+        for (int i = 0; i < render_grid.length; i++) {
+            System.out.print("[");
+            for (int j = 0; j < render_grid[i].length; j++) {
+                System.out.print(render_grid[i][j] + ";");
+            }
+            System.out.print("]");
+        }
+        System.out.print("]");
+    }
 
-    private String pngFinder(int x, int y) {
+    private static String pngFinder(int x, int y, int level) {
         StringBuilder sb = new StringBuilder("d");
-        int level = 0;
         sb.append(level);
         sb.append("_x");
         sb.append(x);
         sb.append("_y");
         sb.append(y);
         sb.append(".png");
+        System.out.println(sb.toString());
         return sb.toString();
     }
 
@@ -189,14 +210,16 @@ public class Rasterer {
         Rasterer rasterer = new Rasterer();
         Map<String, Object> queryResult = rasterer.getMapRaster(input);
 
+        // test x1Num
+//        int x1 = x1Num(-122.24163047377972,8);
+//        int x2 = x2Num(-122.24053369025242, 8);
+//        int y1 = y1Num(37.87655856892288, 8);
+//        int y2 = y2Num(37.87548268822065, 8);
+
         // test render_grid
         String[][] result = (String[][]) queryResult.get("render_grid");
-        System.out.println("query result is: " + result[0][0]);
+        System.out.println("query result is: ");
+        GridPrinter(result);
 
-        // test x1Num
-        int x1 = x1Num(-122.24163047377972,8);
-        int x2 = x2Num(-122.24053369025242, 8);
-        int y1 = y1Num(37.87655856892288, 8);
-        int y2 = y2Num(37.87548268822065, 8);
     }
 }
