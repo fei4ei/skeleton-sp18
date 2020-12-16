@@ -50,13 +50,14 @@ public class Rasterer {
         double h = params.get("h");
         double ullat = params.get("ullat");
         double lrlat = params.get("lrlat");
+        boolean query_success = false;
 
         double[] pngres = pngRes(); // generate an array of resolutions for different levels of png images
         for (int i = 0; i < pngres.length; i++) {
             System.out.println("res at png level " + (i+1) + ": " + pngres[i]);
         }
 
-        double userres = userRes(params); // calculate the resolution in the user query
+        double userres = userRes(ullon, lrlon, w); // calculate the resolution in the user query
         System.out.println("user res: " + userres);
 
         int level = levelFinder(userres, pngres); // calculate the level of the png images needed for the user query
@@ -69,20 +70,47 @@ public class Rasterer {
 
 //        String[][] render_grid = new String[][]{{pngFinder(0, 0, level)}};
         String[][] render_grid = gridGenerator(x1, x2, y1, y2, level);
+        query_success = true;
+
+        double raster_ul_lon = MapServer.ROOT_ULLON +
+                Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) * x1 / Math.pow(2, level-1);
+        double raster_lr_lon = MapServer.ROOT_ULLON +
+                Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) * (x2+1) / Math.pow(2, level-1);
+        double raster_ul_lat = MapServer.ROOT_ULLAT +
+                Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) * y1 / Math.pow(2, level-1);
+        double raster_lr_lat = MapServer.ROOT_ULLAT +
+                Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) * (y2+1) / Math.pow(2, level-1);
+
         results.put("render_grid", render_grid);
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("depth", level-1);
+        results.put("query_success", query_success);
         return results;
     }
 
     private double[] pngRes() {
         // a factor of 2 better image resolution as the level goes higher
-        double resl1 = Math.abs(-122.2998046875 + 122.2119140625) / 256; // level 1: d0_x0_y0.png
-        double resl2 = Math.abs(-122.2998046875 + 122.255859375) / 256; // level 2: d1_x0_y0.png
-        double resl3 = Math.abs(-122.2998046875 + 122.27783203125) / 256; // level 3: d2_x0_y0.png
-        double resl4 = Math.abs(-122.2998046875 + 122.288818359375) / 256; // level 4: d3_x0_y0.png
-        double resl5 = Math.abs(-122.2998046875 + 122.2943115234375) / 256; // level 5: d4_x0_y0.png
-        double resl6 = Math.abs(-122.2998046875 + 122.29705810546875) / 256; // level 6: d5_x0_y0.png
-        double resl7 = Math.abs(-122.2998046875 + 122.29843139648438) / 256; // level 7: d6_x0_y0.png
-        double resl8 = Math.abs(-122.2998046875 + 122.29911804199219) / 256; // level 8: d7_x0_y0.png
+//        double resl1 = Math.abs(-122.2998046875 + 122.2119140625) / 256; // level 1: d0_x0_y0.png
+//        double resl2 = Math.abs(-122.2998046875 + 122.255859375) / 256; // level 2: d1_x0_y0.png
+//        double resl3 = Math.abs(-122.2998046875 + 122.27783203125) / 256; // level 3: d2_x0_y0.png
+//        double resl4 = Math.abs(-122.2998046875 + 122.288818359375) / 256; // level 4: d3_x0_y0.png
+//        double resl5 = Math.abs(-122.2998046875 + 122.2943115234375) / 256; // level 5: d4_x0_y0.png
+//        double resl6 = Math.abs(-122.2998046875 + 122.29705810546875) / 256; // level 6: d5_x0_y0.png
+//        double resl7 = Math.abs(-122.2998046875 + 122.29843139648438) / 256; // level 7: d6_x0_y0.png
+//        double resl8 = Math.abs(-122.2998046875 + 122.29911804199219) / 256; // level 8: d7_x0_y0.png
+
+        double resl1 = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) / MapServer.TILE_SIZE;
+        double resl2 = resl1/2.0;
+        double resl3 = resl2/2.0;
+        double resl4 = resl3/2.0;
+        double resl5 = resl4/2.0;
+        double resl6 = resl5/2.0;
+        double resl7 = resl6/2.0;
+        double resl8 = resl7/2.0;
+
         return new double[]{resl1, resl2, resl3, resl4, resl5, resl6, resl7, resl8};
 //        res at png level 1: 3.4332275390625E-4
 //        res at png level 2: 1.71661376953125E-4
@@ -94,10 +122,7 @@ public class Rasterer {
 //        res at png level 8: 2.682209014892578E-6
     }
 
-    private double userRes(Map<String, Double> params) {
-        double lrlon = params.get("lrlon");
-        double ullon = params.get("ullon");
-        double w = params.get("w");
+    private double userRes(double ullon, double lrlon, double w) {
         double resolution = Math.abs(lrlon - ullon) / w;
         return resolution;
     }
@@ -111,7 +136,7 @@ public class Rasterer {
                 if (userres < pngres[i]) {
                     continue;
                 }
-                pngLevel = i + 1;
+                pngLevel = i + 1; // level from 1 to 8 while files names from d0 to d7
             }
         }
         return pngLevel;
@@ -185,13 +210,13 @@ public class Rasterer {
 
     private static String pngFinder(int x, int y, int level) {
         StringBuilder sb = new StringBuilder("d");
-        sb.append(level);
+        sb.append(level-1); // level 1: d0
         sb.append("_x");
         sb.append(x);
         sb.append("_y");
         sb.append(y);
         sb.append(".png");
-        System.out.println(sb.toString());
+//        System.out.println(sb.toString());
         return sb.toString();
     }
 
