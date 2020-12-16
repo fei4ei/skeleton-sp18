@@ -128,7 +128,7 @@ public class Rasterer {
     }
 
     private int levelFinder(double userres, double[] pngres) {
-        int pngLevel = -1;
+        int pngLevel = 0;
         if (userres < pngres[pngres.length-1]) {
             pngLevel = pngres.length;
         } else {
@@ -136,7 +136,8 @@ public class Rasterer {
                 if (userres < pngres[i]) {
                     continue;
                 }
-                pngLevel = i + 1; // level from 1 to 8 while files names from d0 to d7
+                pngLevel = i + 1;// level from 1 to 8 while files names from d0 to d7
+                break;
             }
         }
         return pngLevel;
@@ -144,6 +145,7 @@ public class Rasterer {
 
     private static int x1Num(double ullon, int level) {
         if (ullon <= MapServer.ROOT_ULLON) { // user requested urlon is outside the MapServer-provided images
+            System.out.println("x1 num: 0");
             return 0;
         }
         double width_root = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON);
@@ -155,7 +157,9 @@ public class Rasterer {
 
     private static int x2Num(double lrlon, int level) {
         if (lrlon >= MapServer.ROOT_LRLON) { // user requested urlon is outside the MapServer-provided images
-            return (int) (Math.pow(2, level-1) - 1);
+            int x2 = (int) (Math.pow(2, level-1) - 1);
+            System.out.println("x2 number: " + x2);
+            return x2;
         }
         double width_root = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON);
         double x2_user = Math.abs(MapServer.ROOT_ULLON - lrlon);
@@ -166,6 +170,7 @@ public class Rasterer {
 
     private static int y1Num(double ullat, int level) {
         if (ullat >= MapServer.ROOT_ULLAT) { // user requested urlon is outside the MapServer-provided images
+            System.out.println("y1 num: 0");
             return 0;
         }
         double height_root = Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT);
@@ -177,7 +182,9 @@ public class Rasterer {
 
     private static int y2Num(double lrlat, int level) {
         if (lrlat <= MapServer.ROOT_LRLAT) { // user requested urlon is outside the MapServer-provided images
-            return (int) (Math.pow(2, level-1) - 1);
+            int y2 = (int) (Math.pow(2, level-1) - 1);
+            System.out.println("y2 number: " + y2);
+            return y2;
         }
         double height_root = Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT);
         double y2_user = Math.abs(MapServer.ROOT_ULLAT - lrlat);
@@ -221,14 +228,27 @@ public class Rasterer {
     }
 
     public static void main(String[] args) {
-        // local test input
+
         Map<String, Double> input = new HashMap<>();
-        input.put("lrlon", -122.24053369025242); // this set of parameters from test.html
-        input.put("ullon", -122.24163047377972);
-        input.put("w", 892.0);
-        input.put("h", 875.0);
-        input.put("ullat", 37.87655856892288);
-        input.put("lrlat", 37.87548268822065);
+
+        // local test input: test.html
+//        input.put("lrlon", -122.24053369025242); // this set of parameters from test.html
+//        input.put("ullon", -122.24163047377972);
+//        input.put("w", 892.0);
+//        input.put("h", 875.0);
+//        input.put("ullat", 37.87655856892288);
+//        input.put("lrlat", 37.87548268822065);
+//        System.out.println("input is: " + input);
+
+        // local test input: test1234.html
+        input.put("lrlon", -122.20908713544797); // this set of parameters from test.html
+        input.put("ullon", -122.3027284165759);
+        input.put("w", 305.0);
+        input.put("h", 300.0);
+        input.put("ullat", 37.88708748276975);
+        input.put("lrlat", 37.848731523430196);
+        System.out.println(MapServer.ROOT_ULLON + "; " + MapServer.ROOT_LRLON + "; ");
+        System.out.println(MapServer.ROOT_ULLAT + "; " + MapServer.ROOT_LRLAT + "; ");
         System.out.println("input is: " + input);
 
         // create a Rasterer object
@@ -245,6 +265,5 @@ public class Rasterer {
         String[][] result = (String[][]) queryResult.get("render_grid");
         System.out.println("query result is: ");
         GridPrinter(result);
-
     }
 }
