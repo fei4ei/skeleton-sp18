@@ -76,9 +76,9 @@ public class Rasterer {
                 Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) * x1 / Math.pow(2, level-1);
         double raster_lr_lon = MapServer.ROOT_ULLON +
                 Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) * (x2+1) / Math.pow(2, level-1);
-        double raster_ul_lat = MapServer.ROOT_ULLAT +
+        double raster_ul_lat = MapServer.ROOT_ULLAT -
                 Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) * y1 / Math.pow(2, level-1);
-        double raster_lr_lat = MapServer.ROOT_ULLAT +
+        double raster_lr_lat = MapServer.ROOT_ULLAT -
                 Math.abs(MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) * (y2+1) / Math.pow(2, level-1);
 
         results.put("render_grid", render_grid);
