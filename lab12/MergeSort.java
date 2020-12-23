@@ -72,7 +72,6 @@ public class MergeSort {
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        if (items == null) return null;
         int size = items.size();
         Queue<Queue<Item>> iQ = makeSingleItemQueues(items); // makeSingleItemQueues is a destructive method
         // base case
@@ -95,23 +94,23 @@ public class MergeSort {
 
     public static void main(String[] args) {
         Queue<String> students = new Queue<String>();
-        Queue<String> students1 = new Queue<String>();
-        students.enqueue("Alice");
+//        Queue<String> students1 = new Queue<String>();
+//        students.enqueue("Alice");
 //        students.enqueue("Emily");
 //        students.enqueue("Vanessa");
-        students.enqueue("Zoey");
-        students.enqueue("Talia");
-        students.enqueue("Maria");
+//        students.enqueue("Zoey");
+//        students.enqueue("Talia");
+//        students.enqueue("Maria");
 //        students1.enqueue("Nina");
 //        students1.enqueue("Kathy");
 //        students1.enqueue("Susan");
 //        students1.enqueue("Penelope");
-        System.out.println(students);
-        System.out.println(students1);
+        System.out.println("students: " + students);
+//        System.out.println(students1);
 //        System.out.println(mergeSortedQueues(students, students1));
 //        Queue<Queue<String>> temp = makeSingleItemQueues(students);
 //        System.out.println(temp.toString());
         Queue<String> sortedStudents = mergeSort(students);
-        System.out.println(sortedStudents);
+        System.out.println("after sorting: " + sortedStudents);
     }
 }
