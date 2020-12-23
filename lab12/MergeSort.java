@@ -72,42 +72,46 @@ public class MergeSort {
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
+        if (items == null) return null;
         int size = items.size();
-        Queue<Queue<Item>> iQ = makeSingleItemQueues(items);
-        Queue<Item> iQ1 = new Queue<>();
-        Queue<Item> iQ2 = new Queue<>();
-
+        Queue<Queue<Item>> iQ = makeSingleItemQueues(items); // makeSingleItemQueues is a destructive method
         // base case
         if (size == 0) return null;
-        if (size == 1) return items;
+        if (size == 1) return iQ.dequeue();
 
+        Queue<Item> iQ1 = new Queue<>();
+        Queue<Item> iQ2 = new Queue<>();
         // recursive algorithm to mergesort each half
         for (int i = 0; i < size/2; i++) {
             iQ1.enqueue(iQ.dequeue().dequeue());
-            mergeSort(iQ1);
         }
         while (!iQ.isEmpty()) {
             iQ2.enqueue(iQ.dequeue().dequeue());
-            mergeSort(iQ2);
         }
-        mergeSortedQueues(iQ1, iQ2);
-        return items;
+        Queue<Item> iQ3 = mergeSort(iQ1); // Note that mergeSort sorts destructively, rather than sort in place
+        Queue<Item> iQ4 = mergeSort(iQ2);
+        return mergeSortedQueues(iQ3, iQ4);
     }
 
     public static void main(String[] args) {
         Queue<String> students = new Queue<String>();
+        Queue<String> students1 = new Queue<String>();
         students.enqueue("Alice");
-        students.enqueue("Emily");
-        students.enqueue("Vanessa");
+//        students.enqueue("Emily");
+//        students.enqueue("Vanessa");
         students.enqueue("Zoey");
         students.enqueue("Talia");
         students.enqueue("Maria");
-        students.enqueue("Nina");
-        students.equals("Kathy");
-        students.enqueue("Susan");
-        students.enqueue("Jane");
-        students.enqueue("Penelope");
+//        students1.enqueue("Nina");
+//        students1.enqueue("Kathy");
+//        students1.enqueue("Susan");
+//        students1.enqueue("Penelope");
         System.out.println(students);
-        System.out.println(mergeSort(students));
+        System.out.println(students1);
+//        System.out.println(mergeSortedQueues(students, students1));
+//        Queue<Queue<String>> temp = makeSingleItemQueues(students);
+//        System.out.println(temp.toString());
+        Queue<String> sortedStudents = mergeSort(students);
+        System.out.println(sortedStudents);
     }
 }
