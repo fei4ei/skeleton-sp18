@@ -50,11 +50,11 @@ public class QuickSort {
         // Your code here!
         for (Item i : unsorted) {
             if (i.compareTo(pivot) < 0) {
-                less.enqueue(unsorted.dequeue());
+                less.enqueue(i);
             } else if (i.compareTo(pivot) > 0) {
-                greater.enqueue(unsorted.dequeue());
+                greater.enqueue(i);
             } else {
-                equal.enqueue(unsorted.dequeue());
+                equal.enqueue(i);
             }
         }
     }
@@ -93,5 +93,6 @@ public class QuickSort {
         System.out.println("students: " + students);
         Queue<String> sortedStudents = quickSort(students);
         System.out.println("after sorting: " + sortedStudents);
+        System.out.println("original: " + students);
     }
 }

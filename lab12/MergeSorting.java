@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.Queue;
 
 public class MergeSorting {
+
     /**
      * Removes and returns the smallest item that is in q1 or q2.
      *
@@ -69,6 +70,7 @@ public class MergeSorting {
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
+        // @source https://github.com/moboa/berkeley-CS61B/blob/master/lab12/MergeSort.java
         if (items.isEmpty() || items.size() == 1) {
             return items;
         }
