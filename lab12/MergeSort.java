@@ -63,7 +63,7 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
-        // Your code here!
+        // FF: create temp and temp1 so that the original queue will not be altered and we return a new queue
         Queue<Item> temp = new Queue<>();
         Queue<Item> temp1 = new Queue<>();
         Queue<Item> toReturn = new Queue<>();
