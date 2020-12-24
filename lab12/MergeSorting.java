@@ -70,17 +70,17 @@ public class MergeSorting {
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // @source https://github.com/moboa/berkeley-CS61B/blob/master/lab12/MergeSort.java
+
         if (items.isEmpty() || items.size() == 1) {
             return items;
         }
 
         Queue<Queue<Item>> sortedQueues = makeSingleItemQueues(items);
 
+        // @source https://github.com/moboa/berkeley-CS61B/blob/master/lab12/MergeSort.java
         while (sortedQueues.size() > 1) {
             Queue<Item> sortedQ1 = sortedQueues.dequeue();
             Queue<Item> sortedQ2 = sortedQueues.dequeue();
-
             sortedQueues.enqueue(mergeSortedQueues(sortedQ1, sortedQ2));
         }
 

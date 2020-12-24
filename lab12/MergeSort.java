@@ -35,16 +35,24 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        Queue<Item> aux = new Queue<>();
-        for (Item i : items) {
-            aux.enqueue(i);
-        }
+//        Queue<Item> aux = new Queue<>();
+//        for (Item i : items) {
+//            aux.enqueue(i);
+//        }
+//        Queue<Queue<Item>> toReturn = new Queue<>();
+//        while (!aux.isEmpty()) {
+//            Queue<Item> temp = new Queue<>();
+//            temp.enqueue(aux.dequeue());
+//            toReturn.enqueue(temp);
+//        }
+//        return toReturn;
+
         Queue<Queue<Item>> toReturn = new Queue<>();
-        while (!aux.isEmpty()) {
+        for (Item i : items) {
             Queue<Item> temp = new Queue<>();
-            temp.enqueue(aux.dequeue());
+            temp.enqueue(i);
             toReturn.enqueue(temp);
-        }
+        } // not destructive to items
         return toReturn;
     }
 
@@ -64,18 +72,24 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         // FF: create temp and temp1 so that the original queue will not be altered and we return a new queue
-        Queue<Item> temp = new Queue<>();
-        Queue<Item> temp1 = new Queue<>();
+//        Queue<Item> temp = new Queue<>();
+//        Queue<Item> temp1 = new Queue<>();
+//        Queue<Item> toReturn = new Queue<>();
+//
+//        for (Item i : q1) {
+//            temp.enqueue(i);
+//        }
+//        for (Item i : q2) {
+//            temp1.enqueue(i);
+//        }
+//        while (!temp.isEmpty() || !temp1.isEmpty()) {
+//            Item min = getMin(temp, temp1);
+//            toReturn.enqueue(min);
+//        }
+//        return toReturn;
         Queue<Item> toReturn = new Queue<>();
-
-        for (Item i : q1) {
-            temp.enqueue(i);
-        }
-        for (Item i : q2) {
-            temp1.enqueue(i);
-        }
-        while (!temp.isEmpty() || !temp1.isEmpty()) {
-            Item min = getMin(temp, temp1);
+        while (!q1.isEmpty() || !q2.isEmpty()) {
+            Item min = getMin(q1, q2); // destructive to q1 and q2
             toReturn.enqueue(min);
         }
         return toReturn;
@@ -84,29 +98,42 @@ public class MergeSort {
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // Your code here!
-        int size = items.size();
-        Queue<Item> aux = new Queue<>();
-        for (Item i : items) {
-            aux.enqueue(i);
-        }
-//        Queue<Queue<Item>> iQ = makeSingleItemQueues(items); // makeSingleItemQueues is a destructive method
-        // base case
-        if (size == 0) return new Queue<Item>();
-        if (size == 1) return aux;
+//        // FF: my version of codes uses a lot of memory and di not use the makeSingleItemQueues() helper function
+//        int size = items.size();
+//        Queue<Item> aux = new Queue<>();
+//        for (Item i : items) {
+//            aux.enqueue(i);
+//        }
 
-        Queue<Item> iQ1 = new Queue<>();
-        Queue<Item> iQ2 = new Queue<>();
-        // recursive algorithm to mergesort each half
-        for (int i = 0; i < size/2; i++) {
-            iQ1.enqueue(aux.dequeue());
+//        // base case
+//        if (size == 0) return new Queue<Item>();
+//        if (size == 1) return aux;
+//
+//        Queue<Item> iQ1 = new Queue<>();
+//        Queue<Item> iQ2 = new Queue<>();
+//        // recursive algorithm to mergesort each half
+//        for (int i = 0; i < size/2; i++) {
+//            iQ1.enqueue(aux.dequeue());
+//        }
+//        while (!aux.isEmpty()) {
+//            iQ2.enqueue(aux.dequeue());
+//        }
+//        Queue<Item> iQ3 = mergeSort(iQ1); // Note that mergeSort sorts destructively, rather than sort in place
+//        Queue<Item> iQ4 = mergeSort(iQ2);
+//        return mergeSortedQueues(iQ3, iQ4);
+
+        if (items.isEmpty() || items.size() == 1) return items;
+        Queue<Queue<Item>> iQ = makeSingleItemQueues(items); //makeSingleItemQueues is not non-destructive method to items.
+
+        // @source https://github.com/moboa/berkeley-CS61B/blob/master/lab12/MergeSort.java
+        while (iQ.size() > 1) {
+            Queue<Item> sortedQ1 = iQ.dequeue();
+            Queue<Item> sortedQ2 = iQ.dequeue();
+            iQ.enqueue(mergeSortedQueues(sortedQ1, sortedQ2)); //mergeSortedQueue is destructive to sortedQ1 and sortedQ2
+            // remember queue is first in and first out; so this is effectively the recursive merging of the merge sort
         }
-        while (!aux.isEmpty()) {
-            iQ2.enqueue(aux.dequeue());
-        }
-        Queue<Item> iQ3 = mergeSort(iQ1); // Note that mergeSort sorts destructively, rather than sort in place
-        Queue<Item> iQ4 = mergeSort(iQ2);
-        return mergeSortedQueues(iQ3, iQ4);
+        return iQ.dequeue();
+//
     }
 
     public static void main(String[] args) {
@@ -124,13 +151,12 @@ public class MergeSort {
         students.enqueue("Kathy");
         students.enqueue("Susan");
         students.enqueue("Penelope");
-//        System.out.println("students: " + students);
-        System.out.println(students);
+        System.out.println("students: " + students);
 //        System.out.println(mergeSortedQueues(students, students1));
 //        Queue<Queue<String>> temp = makeSingleItemQueues(students);
 //        System.out.println(temp.toString());
         Queue<String> sortedStudents = mergeSort(students);
         System.out.println("after sorting: " + sortedStudents);
-//        System.out.println("empty: " + mergeSort(students1));
+        System.out.println("original: " + students);
     }
 }

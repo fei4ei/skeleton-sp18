@@ -71,7 +71,7 @@ public class QuickSort {
         Queue<Item> equal = new Queue<>();
         Queue<Item> greater = new Queue<>();
         partition(items, pivot, less, equal, greater);
-        less = quickSort(less);
+        less = quickSort(less); // recursive algorithm
         greater = quickSort(greater);
         items = catenate(less, equal);
         items = catenate(items, greater);
