@@ -25,19 +25,8 @@ public class GraphDB {
     private Map<Long, Node> vertices; // long: vertice ID
     private Map<Long, Edge> edges; // long: edge ID
     private Map<Long, HashSet<Long>> adj; // long: vertice v; HashSet: a set of vertices adjacent to v;
-    private Map<Long, Map<Long, Long>> adjacent;
+    // private Map<Long, Map<Long, Long>> adjacent;
     // Map<Long, Long>: first long for vertice ID and second long for edge ID
-
-    private class Node {
-        private long id;
-        private long lat;
-        private long lon;
-        private Node(long ID, long Lat, long Lon) {
-            id = ID;
-            lat = Lat;
-            lon = Lon;
-        }
-    }
 
     private class Edge {
         private String id;
@@ -56,6 +45,10 @@ public class GraphDB {
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
+        vertices = new HashMap<>();
+        edges = new HashMap<>();
+        adj = new HashMap<>();
+
         try {
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);
@@ -87,11 +80,18 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+        for (long v : vertices.keySet()) {
+            HashSet neighbors = adj.get(v);
+            if (neighbors.size() == 0) {
+                adj.remove(v);
+                vertices.remove(v);
+            }
+        }
     }
 
     void addNode(long v, Node curr) {
         vertices.put(v, curr);
-        adj.put(v, null);
+        adj.put(v, new HashSet<>());
     }
 
     void removeNode(long v) {
@@ -181,7 +181,16 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double dist = Double.POSITIVE_INFINITY;
+        long index = -1;
+        for (long v : vertices.keySet()) {
+             double temp = Math.pow((lon(v) - lon), 2) + Math.pow((lat(v) - lat), 2);
+             if (temp < dist) {
+                 dist = temp;
+                 index = v;
+             }
+        }
+        return index;
     }
 
     /**

@@ -37,33 +37,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                     "secondary_link", "tertiary_link"));
     private String activeState = "";
     private final GraphDB g;
-    // private TreeMap<Way, Boolean> edges;
-    private TreeSet<Node> vertices;
-    private TreeSet<Way> Edges;
-    private Way lastWay;
-    // private Graph<Node> myGraph;
-
-    private class Node {
-        private String id;
-        private String lat;
-        private String lon;
-        private Node(String ID, String Lat, String Lon) {
-            id = ID;
-            lat = Lat;
-            lon = Lon;
-        }
-    }
-
-    private class Way {
-        private String id;
-        private List<Node> nodes;
-        private boolean flag;
-        private Way(String ID) {
-            id = ID;
-            flag = false;
-            nodes = new ArrayList<>();
-        }
-    }
+    private long lastEdge;
 
     /**
      * Create a new GraphBuildingHandler.
@@ -71,9 +45,10 @@ public class GraphBuildingHandler extends DefaultHandler {
      */
     public GraphBuildingHandler(GraphDB g) {
         this.g = g;
-        vertices = new TreeSet<>();
-        Edges = new TreeSet<>();
-        lastWay = null;
+
+        // vertices = new TreeSet<>();
+        // Edges = new TreeSet<>();
+        lastEdge = -1;
     }
 
     /**
@@ -103,17 +78,19 @@ public class GraphBuildingHandler extends DefaultHandler {
 
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
-            Node currN = new Node(attributes.getValue("id"),
-                    attributes.getValue("lon"), attributes.getValue("lat") );
-            vertices.add(currN);
+            long Node_id = Long.parseLong(attributes.getValue("id"));
+            long Node_lon = Long.parseLong(attributes.getValue("lon"));
+            long Node_lat = Long.parseLong(attributes.getValue("lat"));
+            Node currN = new Node(Node_id, Node_lon, Node_lat);
+            // vertices.add(currN);
+            g.addNode(Node_id, currN);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
             activeState = "way";
 //            System.out.println("Beginning a way...");
-            Way currW = new Way(attributes.getValue("id"));
-            Edges.add(currW);
-            lastWay = currW;
+            long Edge_id = Long.parseLong(attributes.getValue("id"));
+            lastEdge = Edge_id;
 
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
