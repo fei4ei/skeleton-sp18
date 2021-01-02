@@ -1,10 +1,9 @@
+import com.sun.tools.jdeps.Graph;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *  Parses OSM XML files using an XML SAX parser. Used to construct the graph of roads for
@@ -38,6 +37,33 @@ public class GraphBuildingHandler extends DefaultHandler {
                     "secondary_link", "tertiary_link"));
     private String activeState = "";
     private final GraphDB g;
+    // private TreeMap<Way, Boolean> edges;
+    private TreeSet<Node> vertices;
+    private TreeSet<Way> Edges;
+    private Way lastWay;
+    // private Graph<Node> myGraph;
+
+    private class Node {
+        private String id;
+        private String lat;
+        private String lon;
+        private Node(String ID, String Lat, String Lon) {
+            id = ID;
+            lat = Lat;
+            lon = Lon;
+        }
+    }
+
+    private class Way {
+        private String id;
+        private List<Node> nodes;
+        private boolean flag;
+        private Way(String ID) {
+            id = ID;
+            flag = false;
+            nodes = new ArrayList<>();
+        }
+    }
 
     /**
      * Create a new GraphBuildingHandler.
@@ -45,6 +71,9 @@ public class GraphBuildingHandler extends DefaultHandler {
      */
     public GraphBuildingHandler(GraphDB g) {
         this.g = g;
+        vertices = new TreeSet<>();
+        Edges = new TreeSet<>();
+        lastWay = null;
     }
 
     /**
@@ -68,17 +97,24 @@ public class GraphBuildingHandler extends DefaultHandler {
         if (qName.equals("node")) {
             /* We encountered a new <node...> tag. */
             activeState = "node";
-//            System.out.println("Node id: " + attributes.getValue("id"));
-//            System.out.println("Node lon: " + attributes.getValue("lon"));
-//            System.out.println("Node lat: " + attributes.getValue("lat"));
+            // System.out.println("Node id: " + attributes.getValue("id"));
+            // System.out.println("Node lon: " + attributes.getValue("lon"));
+            // System.out.println("Node lat: " + attributes.getValue("lat"));
 
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
+            Node currN = new Node(attributes.getValue("id"),
+                    attributes.getValue("lon"), attributes.getValue("lat") );
+            vertices.add(currN);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
             activeState = "way";
 //            System.out.println("Beginning a way...");
+            Way currW = new Way(attributes.getValue("id"));
+            Edges.add(currW);
+            lastWay = currW;
+
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
             //System.out.println("Id of a node in this way: " + attributes.getValue("ref"));
