@@ -24,7 +24,11 @@ public class GraphDB {
     private int E;
     private Map<Long, Node> vertices; // long: vertice ID
     private Map<Long, Edge> edges; // long: edge ID
-    private Map<Long, HashSet<Long>> adj; // long: vertice v; HashSet: a set of vertices adjacent to v;
+    private Map<Long, HashSet<Long>> adj;
+    // long: vertice v; HashSet: a set of vertices adjacent to v;
+    private Map<Long, HashSet<Long>> adjEdges;
+    // HashSet: a set of edges connecting v to other vertices;
+
     // private Map<Long, Map<Long, Long>> adjacent;
     // Map<Long, Long>: first long for vertice ID and second long for edge ID
 
@@ -37,6 +41,7 @@ public class GraphDB {
         vertices = new HashMap<>();
         edges = new HashMap<>();
         adj = new HashMap<>();
+        adjEdges = new HashMap<>();
 
         try {
             File inputFile = new File(dbPath);
@@ -50,7 +55,7 @@ public class GraphDB {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
-        clean();
+        // clean();
     }
 
     /**
@@ -81,6 +86,7 @@ public class GraphDB {
     void addNode(long v, Node curr) {
         vertices.put(v, curr);
         adj.put(v, new HashSet<>());
+        adjEdges.put(v, new HashSet<>());
     }
 
     void removeNode(long v) {
@@ -88,19 +94,25 @@ public class GraphDB {
         adj.remove(v);
     }
 
-    void addEdge(long v, long w, long edgeid, Edge e) {
-        adj.get(v).add(w);
-        adj.get(w).add(v);
-        edges.put(edgeid, e);
-    }
-
     void addEdge(Edge e) {
         long v = e.either();
         long w = e.other(v);
         adj.get(v).add(w);
         adj.get(w).add(v);
+
         long edgeid = e.getID();
         edges.put(edgeid, e);
+        adjEdges.get(v).add(edgeid);
+        adjEdges.get(w).add(edgeid);
+    }
+
+    void deleteEdge(Edge e) {
+        long v = e.either();
+        long w = e.other(v);
+        long edgeid = e.getID();
+        adj.get(v).remove(w);
+        adj.get(w).remove(v);
+        edges.remove(edgeid, e);
     }
 
     /**

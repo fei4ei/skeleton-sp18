@@ -1,8 +1,8 @@
 class Node {
     long id;
-    long lat;
-    long lon;
-    Node(long ID, long Lat, long Lon) {
+    double lat;
+    double lon;
+    Node(long ID, double Lat, double Lon) {
         id = ID;
         lat = Lat;
         lon = Lon;

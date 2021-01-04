@@ -2,11 +2,9 @@ class Edge {
     long id;
     final long v;
     final long w;
-    boolean flag;
     double maxspeed;
     Edge(long ID, long V, long W) {
         id = ID;
-        flag = false;
         v = V;
         w = W;
         maxspeed = -1;

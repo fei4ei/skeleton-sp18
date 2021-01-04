@@ -80,10 +80,15 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* Hint: A graph-like structure would be nice. */
             long Node_id = Long.parseLong(attributes.getValue("id"));
             System.out.println(Node_id);
-            // long Node_lon = Long.parseLong(attributes.getValue("lon"));
-            // long Node_lat = Long.parseLong(attributes.getValue("lat"));
-            // Node currN = new Node(Node_id, Node_lon, Node_lat);
-            // g.addNode(Node_id, currN);
+
+            double Nlat = Double.parseDouble(attributes.getValue("lat"));
+            System.out.println(Nlat);
+
+            double Nlon = Double.parseDouble(attributes.getValue("lon"));
+            System.out.println(Nlon);
+
+            Node currN = new Node(Node_id, Nlat, Nlon);
+            g.addNode(Node_id, currN);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
