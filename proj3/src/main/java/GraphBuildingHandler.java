@@ -1,4 +1,3 @@
-import com.sun.tools.jdeps.Graph;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -37,18 +36,19 @@ public class GraphBuildingHandler extends DefaultHandler {
                     "secondary_link", "tertiary_link"));
     private String activeState = "";
     private final GraphDB g;
-    private long lastEdge;
+    private long currEdge;
+    private List<Long> connected;
+    private boolean flag;
 
     /**
      * Create a new GraphBuildingHandler.
-     * @param g The graph to populate with the XML data.
+     * @param g Traph to populate with the XML data.
      */
     public GraphBuildingHandler(GraphDB g) {
         this.g = g;
-
-        // vertices = new TreeSet<>();
-        // Edges = new TreeSet<>();
-        lastEdge = -1;
+        currEdge = -1;
+        connected = new ArrayList<>();
+        flag = false;
     }
 
     /**
@@ -79,18 +79,18 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
             long Node_id = Long.parseLong(attributes.getValue("id"));
-            long Node_lon = Long.parseLong(attributes.getValue("lon"));
-            long Node_lat = Long.parseLong(attributes.getValue("lat"));
-            Node currN = new Node(Node_id, Node_lon, Node_lat);
-            // vertices.add(currN);
-            g.addNode(Node_id, currN);
+            System.out.println(Node_id);
+            // long Node_lon = Long.parseLong(attributes.getValue("lon"));
+            // long Node_lat = Long.parseLong(attributes.getValue("lat"));
+            // Node currN = new Node(Node_id, Node_lon, Node_lat);
+            // g.addNode(Node_id, currN);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
             activeState = "way";
 //            System.out.println("Beginning a way...");
             long Edge_id = Long.parseLong(attributes.getValue("id"));
-            lastEdge = Edge_id;
+            currEdge = Edge_id;
 
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
@@ -102,6 +102,8 @@ public class GraphBuildingHandler extends DefaultHandler {
             cumbersome since you might have to remove the connections if you later see a tag that
             makes this way invalid. Instead, think of keeping a list of possible connections and
             remember whether this way is valid or not. */
+            long nd = Long.parseLong(attributes.getValue("nd"));
+            connected.add(nd);
 
         } else if (activeState.equals("way") && qName.equals("tag")) {
             /* While looking at a way, we found a <tag...> tag. */
@@ -114,6 +116,9 @@ public class GraphBuildingHandler extends DefaultHandler {
                 //System.out.println("Highway type: " + v);
                 /* TODO Figure out whether this way and its connections are valid. */
                 /* Hint: Setting a "flag" is good enough! */
+                if (ALLOWED_HIGHWAY_TYPES.contains(v)) {
+                    flag = true;
+                }
             } else if (k.equals("name")) {
                 //System.out.println("Way Name: " + v);
             }
@@ -147,6 +152,21 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* Hint1: If you have stored the possible connections for this way, here's your
             chance to actually connect the nodes together if the way is valid. */
 //            System.out.println("Finishing a way...");
+            if (flag == true) {
+                addAllEdges();
+                flag = false;
+            }
+            connected = new ArrayList<>();
+        }
+    }
+
+    private void addAllEdges() {
+        int size = connected.size();
+        for (int i = 0; i < size - 1; i++) {
+            long v = connected.get(i);
+            long w = connected.get(i+1);
+            Edge myedge = new Edge(currEdge, v, w);
+            g.addEdge(myedge);
         }
     }
 

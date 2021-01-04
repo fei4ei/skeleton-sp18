@@ -40,6 +40,7 @@ public class TestGraphBuildingTiny {
     public void testNodeCountTinyGraph() {
         Iterable<Long> ids = graphTiny.vertices();
         int numberOfNodes = TestGraphBuilding.countIterableItems(ids);
+        System.out.println(numberOfNodes);
         assertEquals("Your graph should have 7 nodes.", 7, numberOfNodes);
     }
 

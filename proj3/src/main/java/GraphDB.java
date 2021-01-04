@@ -28,17 +28,6 @@ public class GraphDB {
     // private Map<Long, Map<Long, Long>> adjacent;
     // Map<Long, Long>: first long for vertice ID and second long for edge ID
 
-    private class Edge {
-        private String id;
-        private List<Node> nodes;
-        private boolean flag;
-        private Edge(String ID) {
-            id = ID;
-            flag = false;
-            nodes = new ArrayList<>();
-        }
-    }
-
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -105,6 +94,15 @@ public class GraphDB {
         edges.put(edgeid, e);
     }
 
+    void addEdge(Edge e) {
+        long v = e.either();
+        long w = e.other(v);
+        adj.get(v).add(w);
+        adj.get(w).add(v);
+        long edgeid = e.getID();
+        edges.put(edgeid, e);
+    }
+
     /**
      * Returns an iterable of all vertex IDs in the graph.
      * @return An iterable of id's of all vertices in the graph.
@@ -121,6 +119,13 @@ public class GraphDB {
      */
     Iterable<Long> adjacent(long v) {
         return adj.get(v);
+    }
+
+    /** Return all of the graph's edges     *
+     * @return
+     */
+    private Iterable<Long> Edge() {
+        return edges.keySet();
     }
 
     /**

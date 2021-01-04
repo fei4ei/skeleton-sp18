@@ -1,21 +1,33 @@
 class Edge {
     long id;
-    final int v;
-    final int w;
+    final long v;
+    final long w;
     boolean flag;
-    Edge(long ID, int V, int W) {
+    double maxspeed;
+    Edge(long ID, long V, long W) {
         id = ID;
         flag = false;
         v = V;
         w = W;
+        maxspeed = -1;
     }
 
-    public int one() {
+    long getID() {
+        return this.id;
+    }
+
+    void setMaxspeed(double Maxspeed) {
+        maxspeed = Maxspeed;
+    }
+
+    long either() {
         return v;
     }
 
-    public int other() {
-        return w;
+    long other(long vertex) {
+        if (vertex == v) return w;
+        else if (vertex == w) return v;
+        else throw new RuntimeException("Inconsistent Edge");
     }
 
 }
