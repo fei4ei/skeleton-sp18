@@ -165,7 +165,7 @@ public class GraphBuildingHandler extends DefaultHandler {
 //            System.out.println("Finishing a way...");
             if (flag == true) {
                 System.out.println("endElement: add all edges to graph!");
-                // addAllEdges();
+                addAllEdges();
             }
             flag = false;
             connected = new ArrayList<>();
@@ -174,10 +174,12 @@ public class GraphBuildingHandler extends DefaultHandler {
 
     private void addAllEdges() {
         int size = connected.size();
+        System.out.println("size of connected: " + size);
         for (int i = 0; i < size - 1; i++) {
             long v = connected.get(i);
             long w = connected.get(i+1);
             Edge myedge = new Edge(currEdge, v, w);
+            System.out.println("Adding an edge " + currEdge + " connecting " + v + " and " + w);
             g.addEdge(myedge);
         }
     }

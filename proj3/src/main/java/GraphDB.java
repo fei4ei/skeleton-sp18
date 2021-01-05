@@ -55,7 +55,7 @@ public class GraphDB {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
-        // clean();
+        clean();
     }
 
     /**
@@ -78,6 +78,7 @@ public class GraphDB {
             HashSet neighbors = adj.get(v);
             if (neighbors.size() == 0) {
                 adj.remove(v);
+                adjEdges.remove(v);
                 vertices.remove(v);
             }
         }
@@ -211,9 +212,11 @@ public class GraphDB {
         double dist = Double.POSITIVE_INFINITY;
         long index = -1;
         for (long v : vertices.keySet()) {
-             double temp = Math.pow((lon(v) - lon), 2) + Math.pow((lat(v) - lat), 2);
-             if (temp < dist) {
-                 dist = temp;
+             // double temp = Math.pow((lon(v) - lon), 2) + Math.pow((lat(v) - lat), 2);
+             double cal = distance(lon(v), lat(v), lon, lat);
+             System.out.println("dist to vertice " + v + ": " + cal);
+             if (cal < dist) {
+                 dist = cal;
                  index = v;
              }
         }
