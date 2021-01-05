@@ -90,8 +90,17 @@ public class GraphDB {
     }
 
     void removeNode(long v) {
-        vertices.remove(v);
+        // FF: how do write this func w/o adjEdges?
+        for (Long edgeid : adjEdges.get(v)) {
+            Long w = edges.get(edgeid).other(v);
+            adj.get(w).remove(edgeid);
+            adjEdges.get(w).remove(edgeid);
+            edges.remove(edgeid);
+        }
         adj.remove(v);
+        adjEdges.remove(v);
+        vertices.remove(v);
+
     }
 
     void addEdge(Edge e) {
@@ -101,9 +110,9 @@ public class GraphDB {
         adj.get(w).add(v);
 
         long edgeid = e.getID();
-        edges.put(edgeid, e);
         adjEdges.get(v).add(edgeid);
         adjEdges.get(w).add(edgeid);
+        edges.put(edgeid, e);
     }
 
     void deleteEdge(Edge e) {
@@ -112,6 +121,8 @@ public class GraphDB {
         long edgeid = e.getID();
         adj.get(v).remove(w);
         adj.get(w).remove(v);
+        adjEdges.get(v).remove(edgeid);
+        adjEdges.get(w).remove(edgeid);
         edges.remove(edgeid, e);
     }
 
@@ -120,7 +131,6 @@ public class GraphDB {
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
         return vertices.keySet();
     }
 

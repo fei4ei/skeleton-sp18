@@ -1,3 +1,4 @@
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -79,13 +80,13 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
             long Node_id = Long.parseLong(attributes.getValue("id"));
-            System.out.println(Node_id);
+            System.out.println("Node ID: " + Node_id);
 
             double Nlat = Double.parseDouble(attributes.getValue("lat"));
-            System.out.println(Nlat);
+            System.out.println("Lat: " + Nlat);
 
             double Nlon = Double.parseDouble(attributes.getValue("lon"));
-            System.out.println(Nlon);
+            System.out.println("Lon: " + Nlon);
 
             Node currN = new Node(Node_id, Nlat, Nlon);
             g.addNode(Node_id, currN);
@@ -96,6 +97,7 @@ public class GraphBuildingHandler extends DefaultHandler {
 //            System.out.println("Beginning a way...");
             long Edge_id = Long.parseLong(attributes.getValue("id"));
             currEdge = Edge_id;
+            System.out.println("Edge ID: " + Edge_id);
 
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
@@ -107,8 +109,11 @@ public class GraphBuildingHandler extends DefaultHandler {
             cumbersome since you might have to remove the connections if you later see a tag that
             makes this way invalid. Instead, think of keeping a list of possible connections and
             remember whether this way is valid or not. */
-            long nd = Long.parseLong(attributes.getValue("nd"));
-            connected.add(nd);
+            // String temp = attributes.getValue("ref");
+            // System.out.println(temp);
+            long ref = Long.parseLong(attributes.getValue("ref"));
+            System.out.println("ref: " + ref);
+            connected.add(ref);
 
         } else if (activeState.equals("way") && qName.equals("tag")) {
             /* While looking at a way, we found a <tag...> tag. */
@@ -122,6 +127,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                 /* TODO Figure out whether this way and its connections are valid. */
                 /* Hint: Setting a "flag" is good enough! */
                 if (ALLOWED_HIGHWAY_TYPES.contains(v)) {
+                    System.out.println("allowed highway!");
                     flag = true;
                 }
             } else if (k.equals("name")) {
@@ -158,9 +164,10 @@ public class GraphBuildingHandler extends DefaultHandler {
             chance to actually connect the nodes together if the way is valid. */
 //            System.out.println("Finishing a way...");
             if (flag == true) {
-                addAllEdges();
-                flag = false;
+                System.out.println("endElement: add all edges to graph!");
+                // addAllEdges();
             }
+            flag = false;
             connected = new ArrayList<>();
         }
     }
@@ -173,6 +180,10 @@ public class GraphBuildingHandler extends DefaultHandler {
             Edge myedge = new Edge(currEdge, v, w);
             g.addEdge(myedge);
         }
+    }
+
+    public static void main(String[] args) {
+
     }
 
 }
