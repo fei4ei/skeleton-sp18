@@ -74,13 +74,17 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+        ArrayList<Long> num = new ArrayList<>();
         for (long v : vertices.keySet()) {
             HashSet neighbors = adj.get(v);
             if (neighbors.size() == 0) {
-                adj.remove(v);
-                adjEdges.remove(v);
-                vertices.remove(v);
+                num.add(v);
             }
+        }
+        for (int i = 0; i < num.size(); i++) {
+            adj.remove(i);
+            adjEdges.remove(i);
+            vertices.remove(i);
         }
     }
 
@@ -214,7 +218,7 @@ public class GraphDB {
         for (long v : vertices.keySet()) {
              // double temp = Math.pow((lon(v) - lon), 2) + Math.pow((lat(v) - lat), 2);
              double cal = distance(lon(v), lat(v), lon, lat);
-             System.out.println("dist to vertice " + v + ": " + cal);
+             // System.out.println("dist to vertice " + v + ": " + cal);
              if (cal < dist) {
                  dist = cal;
                  index = v;

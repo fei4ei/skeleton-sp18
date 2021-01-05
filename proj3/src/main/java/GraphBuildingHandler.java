@@ -80,13 +80,13 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
             long Node_id = Long.parseLong(attributes.getValue("id"));
-            System.out.println("Node ID: " + Node_id);
+            // System.out.println("Node ID: " + Node_id);
 
             double Nlat = Double.parseDouble(attributes.getValue("lat"));
-            System.out.println("Lat: " + Nlat);
+            // System.out.println("Lat: " + Nlat);
 
             double Nlon = Double.parseDouble(attributes.getValue("lon"));
-            System.out.println("Lon: " + Nlon);
+            // System.out.println("Lon: " + Nlon);
 
             Node currN = new Node(Node_id, Nlat, Nlon);
             g.addNode(Node_id, currN);
@@ -97,7 +97,7 @@ public class GraphBuildingHandler extends DefaultHandler {
 //            System.out.println("Beginning a way...");
             long Edge_id = Long.parseLong(attributes.getValue("id"));
             currEdge = Edge_id;
-            System.out.println("Edge ID: " + Edge_id);
+            // System.out.println("Edge ID: " + Edge_id);
 
         } else if (activeState.equals("way") && qName.equals("nd")) {
             /* While looking at a way, we found a <nd...> tag. */
@@ -112,7 +112,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             // String temp = attributes.getValue("ref");
             // System.out.println(temp);
             long ref = Long.parseLong(attributes.getValue("ref"));
-            System.out.println("ref: " + ref);
+            // System.out.println("ref: " + ref);
             connected.add(ref);
 
         } else if (activeState.equals("way") && qName.equals("tag")) {
@@ -127,7 +127,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                 /* TODO Figure out whether this way and its connections are valid. */
                 /* Hint: Setting a "flag" is good enough! */
                 if (ALLOWED_HIGHWAY_TYPES.contains(v)) {
-                    System.out.println("allowed highway!");
+                    // System.out.println("allowed highway!");
                     flag = true;
                 }
             } else if (k.equals("name")) {
@@ -164,7 +164,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             chance to actually connect the nodes together if the way is valid. */
 //            System.out.println("Finishing a way...");
             if (flag == true) {
-                System.out.println("endElement: add all edges to graph!");
+                // System.out.println("endElement: add all edges to graph!");
                 addAllEdges();
             }
             flag = false;
@@ -174,18 +174,14 @@ public class GraphBuildingHandler extends DefaultHandler {
 
     private void addAllEdges() {
         int size = connected.size();
-        System.out.println("size of connected: " + size);
+        // System.out.println("size of connected: " + size);
         for (int i = 0; i < size - 1; i++) {
             long v = connected.get(i);
             long w = connected.get(i+1);
             Edge myedge = new Edge(currEdge, v, w);
-            System.out.println("Adding an edge " + currEdge + " connecting " + v + " and " + w);
+            // System.out.println("Adding an edge " + currEdge + " connecting " + v + " and " + w);
             g.addEdge(myedge);
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }
