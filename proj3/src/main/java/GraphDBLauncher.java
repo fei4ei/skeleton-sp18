@@ -10,6 +10,7 @@ public class GraphDBLauncher {
     private static final String OSM_DB_PATH = "../library-sp18/data/berkeley-2018-small.osm.xml";
     // private static final String OSM_DB_PATH = "../library-sp18/data/tiny-clean.osm.xml";
 
+    // git push not working
     public static void main(String[] args) {
         GraphDB g = new GraphDB(OSM_DB_PATH);
 
