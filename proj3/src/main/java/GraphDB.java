@@ -82,9 +82,10 @@ public class GraphDB {
             }
         }
         for (int i = 0; i < num.size(); i++) {
-            adj.remove(i);
-            adjEdges.remove(i);
-            vertices.remove(i);
+            Long index = num.get(i);
+            adj.remove(index);
+            adjEdges.remove(index);
+            vertices.remove(index);
         }
     }
 
