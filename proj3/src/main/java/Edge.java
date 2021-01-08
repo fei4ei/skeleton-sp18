@@ -1,5 +1,5 @@
 class Edge {
-    long id;
+    final long id;
     final long v;
     final long w;
     double maxspeed;

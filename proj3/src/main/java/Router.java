@@ -1,5 +1,6 @@
-import java.util.List;
-import java.util.Objects;
+import jdk.internal.access.JavaIOFileDescriptorAccess;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,23 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    static HashMap<Long, Double> distTo;
+    static HashMap<Long, Long> edgeTo; // this is the found *best* route
+    static HashMap<Long, Double> heuristic;
+    static HashSet<Long> marked;
+    static DistComparator comp;
+    static PriorityQueue<Long> fringe;
+
+    public Router() {
+        comp = new DistComparator();
+        distTo = new HashMap<>();
+        edgeTo = new HashMap<>();
+        heuristic = new HashMap<>();
+        marked = new HashSet<>();
+        fringe = new PriorityQueue<>(0, comp);
+    }
+
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +43,51 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
+        Long start = g.closest(stlon, stlat);
+        Long goal = g.closest(destlon, destlat);
+        double SG = g.distance(stlon, stlat, destlon, destlat);
+        distTo.put(start, 0.0);
+        distTo.put(goal, SG);
+        heuristic.put(start, SG);
+        heuristic.put(goal, 0.0);
+
+        fringe.add(start);
+        while (!fringe.isEmpty()) {
+            Long v = fringe.remove();
+            if (v.equals(goal)) {
+                // landed on the destination!
+                break;
+            } else if (marked.contains(v)) {
+                // this node has been visited and the current distance will has worse priority than visited last time
+                continue;
+            } else {
+                marked.add(v);
+                for (Long w : g.adjacent(v)) {
+                    relax(g, v, w, stlon, stlat, destlon, destlat);
+                }
+            }
+        }
         return null; // FIXME
+    }
+
+    private static class DistComparator implements Comparator<Long> {
+        @Override
+        public int compare(Long o, Long p) {
+            return (int) (distTo.get(o) + heuristic.get(o) - distTo.get(p) - heuristic.get(p));
+        }
+    }
+
+    private static void relax(GraphDB g, Long v, Long w, double stlon, double stlat,
+                              double destlon, double destlat) {
+        double VW = g.distance(v, w);
+        double SV = g.distance(stlon, stlat, g.lon(v), g.lat(v));
+        double bestSW = distTo.get(w);
+        if (SV+VW < bestSW) {
+            distTo.put(w, SV + VW);
+            edgeTo.put(w, v);
+            heuristic.put(w, g.distance(destlon, destlat, g.lon(w), g.lat(w)));
+            fringe.add(w);
+        }
     }
 
     /**
