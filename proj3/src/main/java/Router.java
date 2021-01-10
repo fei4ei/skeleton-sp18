@@ -14,7 +14,7 @@ public class Router {
     static HashMap<Long, Double> distTo;
     static HashMap<Long, Long> edgeTo; // this is the found *best* route
     static HashMap<Long, Double> heuristic;
-    static HashSet<Long> marked;
+    // static HashSet<Long> marked;
     static DistComparator comp;
     static PriorityQueue<Long> fringe;
 
@@ -38,7 +38,7 @@ public class Router {
         distTo = new HashMap<>();
 
         heuristic = new HashMap<>();
-        marked = new HashSet<>();
+        // marked = new HashSet<>();
 
         comp = new DistComparator();
         fringe = new PriorityQueue<>(16, comp);
@@ -54,11 +54,11 @@ public class Router {
             if (v.equals(goal)) {
                 // landed on the destination!
                 break;
-            } else if (marked.contains(v)) {
+            // } else if (marked.contains(v)) {
                 // this node has been visited and the current distance will has worse priority than visited last time
-                continue;
+                // continue;
             } else {
-                marked.add(v);
+                // marked.add(v);
                 for (Long w : g.adjacent(v)) {
                     relax(g, v, w, stlon, stlat, destlon, destlat);
                 }
@@ -66,9 +66,12 @@ public class Router {
         }
 
         LinkedList<Long> path = new LinkedList<>();
+        // System.out.println("start: " + start + "; end: " + goal);
         Long v = goal;
+
         while (!v.equals(start)) {
             path.addFirst(v);
+            // System.out.println(edgeTo.get(v) + " -->" + v);
             v = edgeTo.get(v);
         }
         path.addFirst(start);
@@ -86,13 +89,14 @@ public class Router {
     private static void relax(GraphDB g, Long v, Long w, double stlon, double stlat,
                               double destlon, double destlat) {
         double VW = g.distance(v, w);
-        double SV = g.distance(stlon, stlat, g.lon(v), g.lat(v));
+        double SV = distTo.get(v);
         double bestSW = distTo.containsKey(w) ? distTo.get(w) : Double.POSITIVE_INFINITY;
         if (SV+VW < bestSW) {
             edgeTo.put(w, v);
             distTo.put(w, SV + VW); // add distTo for w before enqueue w into fringe
             heuristic.put(w, g.distance(destlon, destlat, g.lon(w), g.lat(w)));
             fringe.add(w);
+            // System.out.println(w + " added: " + v + " -> " + w + "; dist(w): " + distTo.get(w) + "; " + VW);
         }
     }
 
