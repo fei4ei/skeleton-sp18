@@ -12,14 +12,11 @@ import java.util.regex.Pattern;
  */
 public class Router {
     static HashMap<Long, Double> distTo;
-    static HashMap<Long, Long> edgeTo; // this is the found *best* route
+    static HashMap<Long, Long> edgeTo; // this is the found *best* route thus far
     static HashMap<Long, Double> heuristic;
     // static HashSet<Long> marked;
     static DistComparator comp;
     static PriorityQueue<Long> fringe;
-
-    public Router() {
-    }
 
     /**
      * Return a List of longs representing the shortest path from the node
@@ -36,21 +33,21 @@ public class Router {
                                           double destlon, double destlat) {
         edgeTo = new HashMap<>();
         distTo = new HashMap<>();
-
         heuristic = new HashMap<>();
         // marked = new HashSet<>();
-
         comp = new DistComparator();
         fringe = new PriorityQueue<>(16, comp);
 
         Long start = g.closest(stlon, stlat);
         Long goal = g.closest(destlon, destlat);
         distTo.put(start, 0.0);
+        edgeTo.put(start, start);
         double SG = g.distance(stlon, stlat, destlon, destlat);
         heuristic.put(start, SG);
         fringe.add(start);
+
         while (!fringe.isEmpty()) {
-            Long v = fringe.remove();
+            Long v = fringe.poll();
             if (v.equals(goal)) {
                 // landed on the destination!
                 break;
@@ -81,7 +78,10 @@ public class Router {
     private static class DistComparator implements Comparator<Long> {
         @Override
         public int compare(Long o, Long p) {
-            return (int) (distTo.get(o) + heuristic.get(o) - distTo.get(p) - heuristic.get(p));
+            double result = distTo.get(o) + heuristic.get(o) - distTo.get(p) - heuristic.get(p);
+            if (result < 0.0) return -1;
+            else if (result > 0.0) return 1;
+            else return 0;
             // return (int) (distTo.get(o) - distTo.get(p));
         }
     }
