@@ -28,6 +28,35 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
+        int[] charval = new int[asciis.length];
+        for (int j = 0; j < asciis.length; i++) {
+            char temp = asciis[].charAt(index);
+            charval[j] = (int) temp;
+        }
+
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int i : charval) {
+            max = max > i ? max : i;
+            min = min < i ? min : i;
+        }
+
+        // gather all the counts for each value
+        int[] counts = new int[max - min + 1];
+        for (int i : charval) {
+            counts[i - min]++;
+        }
+
+        // when we're dealing with ints, we can just put each value
+        // count number of times into the new array
+        int[] sorted = new int[arr.length];
+        int k = 0;
+        for (int i = min; i < max + 1; i += 1) { // counts.length: alphabet size
+            for (int j = 0; j < counts[i - min]; j += 1, k += 1) {
+                sorted[k] = i;
+            }
+        }
+
         return;
     }
 
