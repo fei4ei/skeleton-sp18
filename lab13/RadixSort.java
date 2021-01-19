@@ -1,3 +1,8 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 /**
  * Class for doing Radix sort
  *
@@ -17,7 +22,15 @@ public class RadixSort {
      */
     public static String[] sort(String[] asciis) {
         // TODO: Implement LSD Sort
-        return null;
+        int maxlength = 0;
+        for (String str : asciis) {
+            maxlength = Math.max(str.length(), maxlength);
+        }
+        String[] sorted = asciis.clone();
+        for (int i = maxlength; i >= 0; i--) {
+            sortHelperLSD(sorted, i);
+        }
+        return sorted;
     }
 
     /**
@@ -27,33 +40,39 @@ public class RadixSort {
      * @param index The position to sort the Strings on.
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        // Optional LSD helper method for required LSD radix sort
-        int[] charval = new int[asciis.length];
-        for (int j = 0; j < asciis.length; i++) {
-            char temp = asciis[].charAt(index);
-            charval[j] = (int) temp;
+        // int[] charval = new int[asciis.length];
+        Map<Integer, LinkedList<String>> track = new HashMap<>();
+        for (int i = 0; i < asciis.length; i++) {
+            int intval = (index < asciis[i].length()) ? (int) asciis[i].charAt(index) : -1;
+
+            // charval[j] = (int) temp;
+            if (!track.containsKey(intval)) {
+                LinkedList<String> mylist = new LinkedList<String>();
+                mylist.add(asciis[i]);
+                track.put(intval, mylist);
+            } else {
+                track.get(intval).add(asciis[i]);
+            }
         }
 
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        for (int i : charval) {
-            max = max > i ? max : i;
-            min = min < i ? min : i;
+        for (int val : track.keySet()) {
+            max = max > val ? max : val;
+            min = min < val ? min : val;
         }
 
-        // gather all the counts for each value
         int[] counts = new int[max - min + 1];
-        for (int i : charval) {
-            counts[i - min]++;
+        for (int val : track.keySet()) {
+            for (String str : track.get(val)) {
+                counts[val - min]++;
+            }
         }
 
-        // when we're dealing with ints, we can just put each value
-        // count number of times into the new array
-        int[] sorted = new int[arr.length];
         int k = 0;
-        for (int i = min; i < max + 1; i += 1) { // counts.length: alphabet size
+        for (int i = min; i < max + 1; i += 1) {
             for (int j = 0; j < counts[i - min]; j += 1, k += 1) {
-                sorted[k] = i;
+                asciis[k] = track.get(i).get(j);
             }
         }
 
@@ -73,5 +92,18 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+
+    public static void main(String[] arg) {
+        String[] mys = new String[4];
+        mys[0] = "z0";
+        mys[1] = "sad";
+        mys[2] = "a";
+        mys[3] = "same";
+        System.out.println(Arrays.toString(mys));
+        String[] sorted = sort(mys);
+        System.out.println(Arrays.toString(sorted));
+        //sortHelperLSD(mys, 2);
+        // System.out.println(Arrays.toString(mys));
     }
 }
