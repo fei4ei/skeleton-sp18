@@ -27,7 +27,7 @@ public class RadixSort {
             maxlength = Math.max(str.length(), maxlength);
         }
         String[] sorted = asciis.clone();
-        for (int i = maxlength; i >= 0; i--) {
+        for (int i = maxlength - 1; i >= 0; i--) {
             sortHelperLSD(sorted, i);
         }
         return sorted;
@@ -39,6 +39,8 @@ public class RadixSort {
      * @param asciis Input array of Strings
      * @param index The position to sort the Strings on.
      */
+
+    // Still have an runtime error by autograder
     private static void sortHelperLSD(String[] asciis, int index) {
         // int[] charval = new int[asciis.length];
         Map<Integer, LinkedList<String>> track = new HashMap<>();
