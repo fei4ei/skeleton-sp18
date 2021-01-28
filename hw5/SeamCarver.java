@@ -5,9 +5,11 @@ import java.awt.*;
 public class SeamCarver {
     Picture pic;
     double[][] energy;
+    Picture tpic;
     double[][] transposed;
     public SeamCarver(Picture picture) {
         pic = picture;
+        tpic = transpose(pic);
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
         for (int i = 0; i < width(); i++) {
@@ -57,16 +59,23 @@ public class SeamCarver {
     }
 
     // transpose the pic; to be finished;
-    private static Picture transpose(Picture picture) {
-        Picture tpic = picture;
+    private Picture transpose(Picture picture) {
+        Picture tpic = new Picture(height(), width());
+        for (int i = 0; i < height(); i++) {
+            for (int j = 0; j < width(); j++) {
+                tpic.setRGB(i, j, picture.getRGB(j, i));
+            }
+        }
         return tpic;
     }
 
-    // return the square of the y gradient; explore the idea of transposing/x gradient
-    private int ygradsqu(Picture picture, int x, int y) {
-        //Picture npic = transpose(picture);
-        // return xgradsqu(npic, y, x);
+    // return the square of the y gradient, exploring the idea of transposing followed by xgradsqu()
+    private int ygradsquTr(int x, int y) {
+        return xgradsqu(tpic, y, x);
+    }
 
+    // return the square of the y gradient, by modifying the x gradient codes
+    private int ygradsqu(Picture picture, int x, int y) {
         Color prev = y > 0 ? picture.get(x,y-1) : picture.get(x, height()-1);
         int pr = prev.getRed();
         int pg = prev.getGreen();
@@ -106,7 +115,6 @@ public class SeamCarver {
         if (seam.length!=width() || checkSeamValidity(seam)) {
             throw new IllegalArgumentException();
         }
-
         pic = SeamRemover.removeHorizontalSeam(pic, seam);
 
     }
