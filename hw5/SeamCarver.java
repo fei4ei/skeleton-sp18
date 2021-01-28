@@ -1,4 +1,5 @@
 import edu.princeton.cs.algs4.Picture;
+import edu.princeton.cs.algs4.Stack;
 
 import java.awt.*;
 
@@ -7,6 +8,7 @@ public class SeamCarver {
     double[][] energy;
     Picture tpic;
     double[][] transposed;
+    int[][] vpointer;
     double[][] mcp; // minimal cost path ending at i,j
 
     public SeamCarver(Picture picture) {
@@ -14,6 +16,7 @@ public class SeamCarver {
         tpic = transpose(pic);
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
+        vpointer = new int[width()][height()];
         for (int i = 0; i < width(); i++) {
             for (int j = 0; j < height(); j++) {
                 energy[i][j] = energy(i, j);
@@ -94,34 +97,52 @@ public class SeamCarver {
             throw new IndexOutOfBoundsException();
         }
         return xgradsqu(pic, x, y) + ygradsqu(pic, x, y);
-    }
+     }
 
-    // subroutine to find minimal cost path ending at pixel(x,y)
-    private int edgeTo(int x, int y) {
-        int pointer = 0;
-        if (checkinBound(x,y) == false) {
-            throw new IndexOutOfBoundsException();
-        }
+    // subroutine to find vertical minimal cost path ending at pixel(x,y)
+    private void VedgeTo(int x, int y) {
         if (y == 0) { // top row
-            mcp[x][y] = energy(x,y);
+            mcp[x][y] = energy[x][y];
         } else {
             if (x-1>=0 && mcp[x-1][y-1]<mcp[x][y-1] && mcp[x-1][y-1]<mcp[x+1][y-1]) {
-                pointer = -1;
-                mcp[x][y] = mcp[x-1][y-1] + energy(x,y);
+                vpointer[x][y] = -1;
+                mcp[x][y] = mcp[x-1][y-1] + energy[x][y];
             } else if (x+1<width() && mcp[x+1][y-1]<mcp[x][y-1] && mcp[x+1][y-1]<mcp[x-1][y-1]) {
-                pointer = 1;
-                mcp[x][y] = mcp[x+1][y-1] + energy(x,y);
+                vpointer[x][y] = 1;
+                mcp[x][y] = mcp[x+1][y-1] + energy[x][y];
             }
         }
-        return pointer;
     }
 
-    public int[] findHorizontalSeam() {
+   public int[] findHorizontalSeam() {
         return null;
     }
 
     public int[] findVerticalSeam() {
-        return null;
+        double mcpbest = mcp[0][height()-1];
+        Stack<Integer> output = new Stack<>();
+        for (int i = 0; i < height(); i++) {
+            for (int j = 0; j < width(); j++) {
+                VedgeTo(j, i);
+            }
+        }
+        int pointer = 0;
+        for (int j = 1; j < width()-1; j++) {
+            if (mcp[j][height()-1] < mcpbest) {
+                pointer = j;
+                mcpbest = mcp[j][height()-1];
+            }
+        }
+        output.push(pointer);
+        for (int i = height()-1; i > 0 ; i--) {
+            pointer = pointer + vpointer[pointer][i];
+            output.push(pointer);
+        }
+        int[] seam = new int[height()];
+        for (int i = 0; i < height(); i++) {
+            seam[i] = output.pop();
+        }
+        return seam;
     }
 
     private boolean checkSeamValidity(int[] seam) {
