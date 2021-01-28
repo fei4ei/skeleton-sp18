@@ -7,6 +7,8 @@ public class SeamCarver {
     double[][] energy;
     Picture tpic;
     double[][] transposed;
+    double[][] mcp; // minimal cost path ending at i,j
+
     public SeamCarver(Picture picture) {
         pic = picture;
         tpic = transpose(pic);
@@ -92,6 +94,26 @@ public class SeamCarver {
             throw new IndexOutOfBoundsException();
         }
         return xgradsqu(pic, x, y) + ygradsqu(pic, x, y);
+    }
+
+    // subroutine to find minimal cost path ending at pixel(x,y)
+    private int edgeTo(int x, int y) {
+        int pointer = 0;
+        if (checkinBound(x,y) == false) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (y == 0) { // top row
+            mcp[x][y] = energy(x,y);
+        } else {
+            if (x-1>=0 && mcp[x-1][y-1]<mcp[x][y-1] && mcp[x-1][y-1]<mcp[x+1][y-1]) {
+                pointer = -1;
+                mcp[x][y] = mcp[x-1][y-1] + energy(x,y);
+            } else if (x+1<width() && mcp[x+1][y-1]<mcp[x][y-1] && mcp[x+1][y-1]<mcp[x-1][y-1]) {
+                pointer = 1;
+                mcp[x][y] = mcp[x+1][y-1] + energy(x,y);
+            }
+        }
+        return pointer;
     }
 
     public int[] findHorizontalSeam() {
