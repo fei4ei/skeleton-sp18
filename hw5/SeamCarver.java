@@ -4,8 +4,18 @@ import java.awt.*;
 
 public class SeamCarver {
     Picture pic;
+    double[][] energy;
+    double[][] transposed;
     public SeamCarver(Picture picture) {
         pic = picture;
+        energy = new double[width()][height()];
+        transposed = new double[height()][width()];
+        for (int i = 0; i < width(); i++) {
+            for (int j = 0; j < height(); j++) {
+                energy[i][j] = energy(i, j);
+                transposed[j][i] = energy[i][j];
+            }
+        }
     }
 
     public Picture picture() {
@@ -46,28 +56,33 @@ public class SeamCarver {
         return (pr-nr)*(pr-nr) + (pg-ng)*(pg-ng) + (pb-nb)*(pb-nb);
     }
 
-    // transpose the pic
+    // transpose the pic; to be finished;
     private static Picture transpose(Picture picture) {
         Picture tpic = picture;
         return tpic;
     }
 
-    // return the square of the y gradient
+    // return the square of the y gradient; explore the idea of transposing/x gradient
     private int ygradsqu(Picture picture, int x, int y) {
-        Picture npic = transpose(picture);
-        return xgradsqu(npic, y, x);
+        //Picture npic = transpose(picture);
+        // return xgradsqu(npic, y, x);
+
+        Color prev = y > 0 ? picture.get(x,y-1) : picture.get(x, height()-1);
+        int pr = prev.getRed();
+        int pg = prev.getGreen();
+        int pb = prev.getBlue();
+        Color next = y < height() - 1 ? picture.get(x, y+1) : picture.get(x, 0);
+        int nr = next.getRed();
+        int ng = next.getGreen();
+        int nb = next.getBlue();
+        return (pr-nr)*(pr-nr) + (pg-ng)*(pg-ng) + (pb-nb)*(pb-nb);
     }
 
     public double energy(int x, int y) {
-
-        // check if x and y are in bounds
         if (checkinBound(x,y) == false) {
             throw new IndexOutOfBoundsException();
         }
-
-
-
-        return 0.0;
+        return xgradsqu(pic, x, y) + ygradsqu(pic, x, y);
     }
 
     public int[] findHorizontalSeam() {
