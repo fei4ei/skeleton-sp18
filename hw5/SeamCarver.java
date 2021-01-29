@@ -8,8 +8,8 @@ public class SeamCarver {
     double[][] energy;
     Picture tpic;
     double[][] transposed;
-    int[][] vpointer;
-    double[][] vmcp; // vertical minimal cost path ending at i,j
+    // int[][] vpointer;
+    // double[][] vmcp; // vertical minimal cost path ending at i,j
     // int[][] hpointer;
     // double[][] hmcp;
 
@@ -18,8 +18,8 @@ public class SeamCarver {
         tpic = transpose(pic);
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
-        vpointer = new int[width()][height()];
-        vmcp = new double[width()][height()];
+        // vpointer = new int[width()][height()];
+        // vmcp = new double[width()][height()];
         // hpointer = new int[width()][height()];
         // hmcp = new double[width()][height()];
         for (int i = 0; i < width(); i++) {
@@ -104,70 +104,76 @@ public class SeamCarver {
         return xgradsqu(pic, x, y) + ygradsqu(pic, x, y);
      }
 
-    // subroutine to find vertical minimal cost path ending at pixel(x,y)
-    private void VedgeTo(int x, int y) {
-        if (checkinBound(x,y) == false) {
-            throw new IndexOutOfBoundsException();
-        }
+     // subroutine to find vertical minimal cost path ending at pixel(x,y)
+     // to to completed: this algorithm is rather verbose
+     private void VedgeTo(int x, int y, double[][] eng, double[][] vmcp, int[][] vpointer) {
         if (y == 0) { // top row
-            vmcp[x][y] = energy[x][y];
+            vmcp[x][y] = eng[x][y];
         } else {
             if (x==0) {
                 if (vmcp[x+1][y-1]<vmcp[x][y-1]) {
                     vpointer[x][y] = 1;
-                    vmcp[x][y] = vmcp[x + 1][y - 1] + energy[x][y];
+                    vmcp[x][y] = vmcp[x + 1][y - 1] + eng[x][y];
                 } else {
-                    vmcp[x][y] = vmcp[x][y-1] + energy[x][y];
+                    vmcp[x][y] = vmcp[x][y-1] + eng[x][y];
                 }
-            } else if (x==width()-1){
+            } else if (x == eng.length-1){
                 if (vmcp[x-1][y-1]<vmcp[x][y-1]) {
                     vpointer[x][y] = -1;
-                    vmcp[x][y] = vmcp[x - 1][y - 1] + energy[x][y];
+                    vmcp[x][y] = vmcp[x - 1][y - 1] + eng[x][y];
                 } else {
-                    vmcp[x][y] = vmcp[x][y-1] + energy[x][y];
+                    vmcp[x][y] = vmcp[x][y-1] + eng[x][y];
                 }
             } else if (vmcp[x-1][y-1]<vmcp[x][y-1] && vmcp[x-1][y-1]<vmcp[x+1][y-1]) {
                 vpointer[x][y] = -1;
-                vmcp[x][y] = vmcp[x-1][y-1] + energy[x][y];
+                vmcp[x][y] = vmcp[x-1][y-1] + eng[x][y];
             } else if (vmcp[x+1][y-1]<vmcp[x][y-1] && vmcp[x+1][y-1]<vmcp[x-1][y-1]) {
                 vpointer[x][y] = 1;
-                vmcp[x][y] = vmcp[x+1][y-1] + energy[x][y];
+                vmcp[x][y] = vmcp[x+1][y-1] + eng[x][y];
             } else {
-                vmcp[x][y] = vmcp[x][y-1] + energy[x][y];
+                vmcp[x][y] = vmcp[x][y-1] + eng[x][y];
             }
         }
     }
 
-    // find a minimal energy path vertically
-    public int[] findVerticalSeam() {
+    private int[] findVerticalSeam(double[][] energies) {
         double mcpbest = Double.POSITIVE_INFINITY;
         Stack<Integer> output = new Stack<>();
         int pointer = 0;
-        for (int i = 0; i < height(); i++) {
-            for (int j = 0; j < width(); j++) {
-                VedgeTo(j, i);
+        int width = energies.length;
+        int height = energies[0].length;
+        double[][] vmcp = new double[width][height];
+        int[][] vpointer = new int[width][height];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                VedgeTo(j, i, energies, vmcp, vpointer);
             }
         }
-        for (int j = 0; j < width()-1; j++) {
-            if (vmcp[j][height()-1] < mcpbest) {
+        for (int j = 0; j < width-1; j++) {
+            if (vmcp[j][height-1] < mcpbest) {
                 pointer = j;
-                mcpbest = vmcp[j][height()-1];
+                mcpbest = vmcp[j][height-1];
             }
         }
         output.push(pointer);
-        for (int i = height()-1; i > 0 ; i--) {
+        for (int i = height-1; i > 0 ; i--) {
             pointer = pointer + vpointer[pointer][i];
             output.push(pointer);
         }
-        int[] seam = new int[height()];
-        for (int i = 0; i < height(); i++) {
+        int[] seam = new int[height];
+        for (int i = 0; i < height; i++) {
             seam[i] = output.pop();
         }
         return seam;
     }
 
+    // find a minimal energy path vertically
+    public int[] findVerticalSeam() {
+        return findVerticalSeam(energy);
+    }
+
     public int[] findHorizontalSeam() {
-        return null;
+        return findVerticalSeam(transposed);
     }
 
     private boolean checkSeamValidity(int[] seam) {
