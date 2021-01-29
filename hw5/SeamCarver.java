@@ -6,7 +6,7 @@ import java.awt.*;
 public class SeamCarver {
     Picture pic;
     double[][] energy;
-    Picture tpic;
+    // Picture tpic;
     double[][] transposed;
     // int[][] vpointer;
     // double[][] vmcp; // vertical minimal cost path ending at i,j
@@ -15,7 +15,7 @@ public class SeamCarver {
 
     public SeamCarver(Picture picture) {
         pic = picture;
-        tpic = transpose(pic);
+        // tpic = transpose(pic);
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
         // vpointer = new int[width()][height()];
@@ -69,6 +69,7 @@ public class SeamCarver {
     }
 
     // transpose the pic; to be finished;
+    /**
     private Picture transpose(Picture picture) {
         Picture tpic = new Picture(height(), width());
         for (int i = 0; i < height(); i++) {
@@ -78,11 +79,14 @@ public class SeamCarver {
         }
         return tpic;
     }
+     */
 
     // return the square of the y gradient, exploring the idea of transposing followed by xgradsqu()
+    /**
     private int ygradsquTr(int x, int y) {
         return xgradsqu(tpic, y, x);
     }
+     */
 
     // return the square of the y gradient, by modifying the x gradient codes
     private int ygradsqu(Picture picture, int x, int y) {
