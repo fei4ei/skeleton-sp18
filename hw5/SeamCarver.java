@@ -144,7 +144,7 @@ public class SeamCarver {
         double mcpbest = Double.POSITIVE_INFINITY;
         Stack<Integer> output = new Stack<>();
         int pointer = 0;
-        int width = energies.length;
+        int width = energies.length; // x: column number; y: row number
         int height = energies[0].length;
         double[][] vmcp = new double[width][height];
         int[][] vpointer = new int[width][height];
