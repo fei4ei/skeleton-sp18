@@ -29,7 +29,8 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return pic;
+        return new Picture(pic);
+        // return pic;
     }
 
     // width of the current picture
@@ -153,8 +154,8 @@ public class SeamCarver {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 VedgeTo(j, i, energies, vmcp, vpointer);
-                System.out.print(vmcp[j][i] + " ");
-            } System.out.println(" ");
+                // System.out.print(vmcp[j][i] + " ");
+            } // System.out.println(" ");
         }
 
         // for debugging purpose: print out the vmcp matrix
@@ -208,7 +209,7 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         pic = SeamRemover.removeHorizontalSeam(pic, seam);
-        // initialize();
+        initialize();
 
     }
 
@@ -217,24 +218,26 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         pic = SeamRemover.removeVerticalSeam(pic, seam);
-        // initialize();
+        initialize();
     }
 
     public static void main(String[] args) {
-        double[][] energ = new double[][]{{12,27,11,28}, {16,11,27,20}, {13,19,13,7},
-                {27,19,22,25},{15,4,8,13},{9,11,23,14}};
-        double[][] transp = new double[][]{{12,16,13,27,15,9}, {27,11,19,19,4,11}, {11,27,13,22,8,23}, {28,20,7,25,13,14}};
-        Picture pic = SCUtility.doubleToPicture(transp);
-        SeamCarver sc = new SeamCarver(pic);
-        int[] seam = sc.findVerticalSeam(transp);
 
-        // Picture p = new Picture("images/6x5.png");
-        // SeamCarver sc = new SeamCarver(p1);
+//        double[][] energ = new double[][]{{12,27,11,28}, {16,11,27,20}, {13,19,13,7},
+//                {27,19,22,25},{15,4,8,13},{9,11,23,14}};
+//        double[][] transp = new double[][]{{12,16,13,27,15,9}, {27,11,19,19,4,11}, {11,27,13,22,8,23}, {28,20,7,25,13,14}};
+//        Picture pic = SCUtility.doubleToPicture(transp);
+//        SeamCarver sc = new SeamCarver(pic);
+//        int[] seam = sc.findVerticalSeam(transp);
+
+        Picture p = new Picture("images/6x5.png");
+        SeamCarver sc = new SeamCarver(p);
         // int[] seam = sc.findVerticalSeam();
         // int[] expected = {3, 4, 3, 2, 2};
-        System.out.println(sc.height() + " " + sc.width() + " " + Arrays.toString(seam));
+        // System.out.println(sc.height() + " " + sc.width() + " " + Arrays.toString(seam));
         // SeamRemover.removeVerticalSeam(p, seam);
         // sc.removeVerticalSeam(seam);
+        sc.picture().save("output.png");
 
     }
 }

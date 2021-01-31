@@ -13,6 +13,8 @@
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.Arrays;
+
 public class ShowSeams {
 
     private static void showHorizontalSeam(SeamCarver sc) {
@@ -25,12 +27,14 @@ public class ShowSeams {
     private static void showVerticalSeam(SeamCarver sc) {
         Picture ep = SCUtility.toEnergyPicture(sc);
         int[] verticalSeam = sc.findVerticalSeam();
+        // System.out.println(Arrays.toString(verticalSeam));
         Picture epOverlay = SCUtility.seamOverlay(ep, false, verticalSeam);
         epOverlay.show();
     }
 
     public static void main(String[] args) {
-        Picture picture = new Picture(args[0]);
+        // Picture picture = new Picture(args[0]);
+        Picture picture = new Picture("images/HJoceanSmall.png");
         StdOut.printf("%d-by-%d image\n", picture.width(), picture.height());
         picture.show();        
         SeamCarver sc = new SeamCarver(picture);
