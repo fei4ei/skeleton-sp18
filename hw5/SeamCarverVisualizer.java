@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -50,6 +51,7 @@ public class SeamCarverVisualizer {
     public void visualizeVerticalCarve(SeamCarver sc, int N) {
         for (int i = 0; i < N; i++) {
             int[] minSeam = sc.findVerticalSeam();
+            System.out.println(Arrays.toString(minSeam));
             Picture p = sc.picture();
             paintVerticalSeam(p, minSeam);
             show(p);
@@ -103,20 +105,24 @@ public class SeamCarverVisualizer {
     }
 
     public static void main(String[] args) {
-        if (args.length <= 1) {
-            System.out.println("Usage: SeamCarver [filename] [numPixels] [horizontal | yN]");
-            return;
-        }
+//        if (args.length <= 1) {
+//            System.out.println("Usage: SeamCarver [filename] [numPixels] [horizontal | yN]");
+//            return;
+//        }
 
-        Picture samplePicture = new Picture(args[0]);
+        // Picture samplePicture = new Picture(args[0]);
+        // Picture samplePicture = new Picture("images/HJoceanSmall.png");
+        Picture samplePicture = new Picture("images/6x5.png");
         SeamCarver sc = new SeamCarver(samplePicture);
-        int N = Integer.parseInt(args[1]);
+        // int N = Integer.parseInt(args[1]);
+        int N = 1;
 
         SeamCarverVisualizer scv = new SeamCarverVisualizer();
-        if (args[2].equals("y")) {
-            scv.visualizeHorizontalCarve(sc, N);
-        } else {
-            scv.visualizeVerticalCarve(sc, N);
-        }
+        scv.visualizeVerticalCarve(sc, N);
+//        if (args[2].equals("y")) {
+//            scv.visualizeHorizontalCarve(sc, N);
+//        } else {
+//            scv.visualizeVerticalCarve(sc, N);
+//        }
     }
 }

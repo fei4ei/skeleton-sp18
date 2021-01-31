@@ -1,27 +1,25 @@
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class SeamCarver {
     Picture pic;
     double[][] energy;
-    // Picture tpic;
     double[][] transposed;
-    // int[][] vpointer;
-    // double[][] vmcp; // vertical minimal cost path ending at i,j
-    // int[][] hpointer;
-    // double[][] hmcp;
+    // Picture tpic;
 
     public SeamCarver(Picture picture) {
         pic = picture;
         // tpic = transpose(pic);
+        initialize();
+    }
+
+    public void initialize() {
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
-        // vpointer = new int[width()][height()];
-        // vmcp = new double[width()][height()];
-        // hpointer = new int[width()][height()];
-        // hmcp = new double[width()][height()];
         for (int i = 0; i < width(); i++) {
             for (int j = 0; j < height(); j++) {
                 energy[i][j] = energy(i, j);
@@ -110,7 +108,7 @@ public class SeamCarver {
 
      // subroutine to find vertical minimal cost path ending at pixel(x,y)
      // to to completed: this algorithm is rather verbose
-     private void VedgeTo(int x, int y, double[][] eng, double[][] vmcp, int[][] vpointer) {
+    private void VedgeTo(int x, int y, double[][] eng, double[][] vmcp, int[][] vpointer) {
         if (y == 0) { // top row
             vmcp[x][y] = eng[x][y];
         } else {
@@ -147,23 +145,35 @@ public class SeamCarver {
         int width = energies.length; // x: column number; y: row number
         int height = energies[0].length;
         double[][] vmcp = new double[width][height];
+        // vmcp is a matrix tracking the cost of vertical minimum cost path *ending* at (i, j)
         int[][] vpointer = new int[width][height];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 VedgeTo(j, i, energies, vmcp, vpointer);
             }
         }
-        for (int j = 0; j < width-1; j++) {
+
+        // for debugging purpose: print out the vmcp matrix
+//        for (int row = 0; row < height; row++) {
+//            for (int col = 0; col < width; col++)
+//                StdOut.printf("%9.0f ", vmcp[col][row]);
+//            StdOut.println();
+//        }
+//        StdOut.println();
+
+        for (int j = 0; j < width; j++) {
             if (vmcp[j][height-1] < mcpbest) {
                 pointer = j;
                 mcpbest = vmcp[j][height-1];
             }
         }
+
         output.push(pointer);
         for (int i = height-1; i > 0 ; i--) {
             pointer = pointer + vpointer[pointer][i];
             output.push(pointer);
         }
+
         int[] seam = new int[height];
         for (int i = 0; i < height; i++) {
             seam[i] = output.pop();
@@ -194,6 +204,7 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         pic = SeamRemover.removeHorizontalSeam(pic, seam);
+        // initialize();
 
     }
 
@@ -202,6 +213,16 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
         pic = SeamRemover.removeVerticalSeam(pic, seam);
+        // initialize();
+    }
+
+    public static void main(String[] args) {
+        Picture p = new Picture("images/6x5.png");
+        SeamCarver sc = new SeamCarver(p);
+        int[] seam = sc.findVerticalSeam();
+        int[] expected = {3, 4, 3, 2, 2};
+        System.out.println(Arrays.toString(seam));
+        SeamRemover.removeVerticalSeam(p, seam);
 
     }
 }
