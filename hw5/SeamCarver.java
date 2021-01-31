@@ -191,7 +191,7 @@ public class SeamCarver {
     }
 
     private boolean checkSeamValidity(int[] seam) {
-        for (int i = 0; i < seam.length - 1; i++) {
+        for (int i = 0; i < seam.length-1; i++) {
             if (Math.abs(seam[i] - seam[i+1]) > 1) {
                 return false;
             }
@@ -209,7 +209,7 @@ public class SeamCarver {
     }
 
     public void removeVerticalSeam(int[] seam) {
-        if (seam.length!=height() || checkSeamValidity(seam)) {
+        if (seam.length!=height() || !checkSeamValidity(seam)) {
             throw new IllegalArgumentException();
         }
         pic = SeamRemover.removeVerticalSeam(pic, seam);
@@ -221,8 +221,9 @@ public class SeamCarver {
         SeamCarver sc = new SeamCarver(p);
         int[] seam = sc.findVerticalSeam();
         int[] expected = {3, 4, 3, 2, 2};
-        System.out.println(Arrays.toString(seam));
-        SeamRemover.removeVerticalSeam(p, seam);
+        System.out.println(sc.height() + " " + sc.width() + Arrays.toString(seam));
+        // SeamRemover.removeVerticalSeam(p, seam);
+        sc.removeVerticalSeam(seam);
 
     }
 }

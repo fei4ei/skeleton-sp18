@@ -51,10 +51,10 @@ public class SeamCarverVisualizer {
     public void visualizeVerticalCarve(SeamCarver sc, int N) {
         for (int i = 0; i < N; i++) {
             int[] minSeam = sc.findVerticalSeam();
-            System.out.println(Arrays.toString(minSeam));
+            // System.out.println(Arrays.toString(minSeam));
             Picture p = sc.picture();
-            paintVerticalSeam(p, minSeam);
-            show(p);
+            // paintVerticalSeam(p, minSeam);
+            // show(p);
             sc.removeVerticalSeam(minSeam);
         }
 
