@@ -53,9 +53,9 @@ public class SeamCarverVisualizer {
             int[] minSeam = sc.findVerticalSeam();
             // System.out.println(Arrays.toString(minSeam));
             Picture p = sc.picture();
-            // paintVerticalSeam(p, minSeam);
-            // show(p);
-            sc.removeVerticalSeam(minSeam);
+            paintVerticalSeam(p, minSeam);
+            show(p);
+            // sc.removeVerticalSeam(minSeam);
         }
 
         show(sc.picture());
@@ -112,7 +112,7 @@ public class SeamCarverVisualizer {
 
         // Picture samplePicture = new Picture(args[0]);
         // Picture samplePicture = new Picture("images/HJoceanSmall.png");
-        Picture samplePicture = new Picture("images/6x5.png");
+        Picture samplePicture = new Picture("images/chameleon.png");
         SeamCarver sc = new SeamCarver(samplePicture);
         // int N = Integer.parseInt(args[1]);
         int N = 1;
