@@ -6,9 +6,9 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class SeamCarver {
-    Picture pic;
-    double[][] energy;
-    double[][] transposed;
+    private Picture pic;
+    private double[][] energy;
+    private double[][] transposed;
     // Picture tpic;
 
     public SeamCarver(Picture picture) {
@@ -17,7 +17,7 @@ public class SeamCarver {
         initialize();
     }
 
-    public void initialize() {
+    private void initialize() {
         energy = new double[width()][height()];
         transposed = new double[height()][width()];
         for (int i = 0; i < width(); i++) {
@@ -29,8 +29,8 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return new Picture(pic);
-        // return pic;
+        // return new Picture(pic);
+        return pic;
     }
 
     // width of the current picture
@@ -221,7 +221,7 @@ public class SeamCarver {
         initialize();
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 
 //        double[][] energ = new double[][]{{12,27,11,28}, {16,11,27,20}, {13,19,13,7},
 //                {27,19,22,25},{15,4,8,13},{9,11,23,14}};
@@ -230,15 +230,15 @@ public class SeamCarver {
 //        SeamCarver sc = new SeamCarver(pic);
 //        int[] seam = sc.findVerticalSeam(transp);
 
-        Picture p = new Picture("images/6x5.png");
-        SeamCarver sc = new SeamCarver(p);
+//        Picture p = new Picture("images/6x5.png");
+//        SeamCarver sc = new SeamCarver(p);
         // int[] seam = sc.findVerticalSeam();
         // int[] expected = {3, 4, 3, 2, 2};
         // System.out.println(sc.height() + " " + sc.width() + " " + Arrays.toString(seam));
         // SeamRemover.removeVerticalSeam(p, seam);
         // sc.removeVerticalSeam(seam);
-        sc.picture().save("output.png");
+//        sc.picture().save("output.png");
 
-    }
+//    }
 }
 
