@@ -113,7 +113,9 @@ public class SeamCarver {
             vmcp[x][y] = eng[x][y];
         } else {
             if (x==0) {
-                if (vmcp[x+1][y-1]<vmcp[x][y-1]) {
+                if (vmcp.length == 1) { // cornercase: only one column
+                    vmcp[x][y] = vmcp[x][y-1] + eng[x][y];
+                } else if (vmcp[x+1][y-1]<vmcp[x][y-1]) {
                     vpointer[x][y] = 1;
                     vmcp[x][y] = vmcp[x + 1][y - 1] + eng[x][y];
                 } else {
