@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class SeamCarver {
-    private Picture pic;
+    Picture pic;
     private double[][] energy;
     private double[][] transposed;
     // Picture tpic;
@@ -29,8 +29,9 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return new Picture(pic);
-        // return pic;
+        Picture newpic = pic;
+        pic = new Picture(pic);
+        return newpic;
     }
 
     // width of the current picture
@@ -222,23 +223,35 @@ public class SeamCarver {
     }
 
 //    public static void main(String[] args) {
-
-//        double[][] energ = new double[][]{{12,27,11,28}, {16,11,27,20}, {13,19,13,7},
-//                {27,19,22,25},{15,4,8,13},{9,11,23,14}};
-//        double[][] transp = new double[][]{{12,16,13,27,15,9}, {27,11,19,19,4,11}, {11,27,13,22,8,23}, {28,20,7,25,13,14}};
-//        Picture pic = SCUtility.doubleToPicture(transp);
-//        SeamCarver sc = new SeamCarver(pic);
-//        int[] seam = sc.findVerticalSeam(transp);
-
+//
+////        double[][] energ = new double[][]{{12,27,11,28}, {16,11,27,20}, {13,19,13,7},
+////                {27,19,22,25},{15,4,8,13},{9,11,23,14}};
+////        double[][] transp = new double[][]{{12,16,13,27,15,9}, {27,11,19,19,4,11}, {11,27,13,22,8,23}, {28,20,7,25,13,14}};
+////        Picture pic = SCUtility.doubleToPicture(transp);
+////        SeamCarver sc = new SeamCarver(pic);
+////        int[] seam = sc.findVerticalSeam(transp);
+//
 //        Picture p = new Picture("images/6x5.png");
+//        // Picture p = new Picture("images/HJoceanSmall.png");
 //        SeamCarver sc = new SeamCarver(p);
-        // int[] seam = sc.findVerticalSeam();
-        // int[] expected = {3, 4, 3, 2, 2};
-        // System.out.println(sc.height() + " " + sc.width() + " " + Arrays.toString(seam));
-        // SeamRemover.removeVerticalSeam(p, seam);
-        // sc.removeVerticalSeam(seam);
-//        sc.picture().save("output.png");
-
+//        // int[] seam = sc.findVerticalSeam();
+//        // int[] expected = {3, 4, 3, 2, 2};
+//        // System.out.println(sc.height() + " " + sc.width() + " " + Arrays.toString(seam));
+//        // SeamRemover.removeVerticalSeam(p, seam);
+//        // sc.removeVerticalSeam(seam);
+//
+//        Picture p1 = sc.picture();
+//        Picture p2 = sc.pic;
+//        p1.save("p1.png");
+//        p2.save("p2.png");
+//        int[] seam = sc.findVerticalSeam();
+//        sc.removeVerticalSeam(seam);
+//        Picture p3 = sc.picture();
+//        Picture p4 = sc.pic;
+//        p3.save("p3.png");
+//        p4.save("p4.png");
+//        //System.out.println(p.equals(p3));
+//        // System.out.println(p3.equals(p4));
 //    }
 }
 
