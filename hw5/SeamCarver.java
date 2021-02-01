@@ -28,10 +28,11 @@ public class SeamCarver {
         }
     }
 
+    // FF: still has a bug a10a) picture() returns a Picture object that is not
+    // equal to argument Picture object even though no seams have been removed
+    // at AGTestSeamCarver.test10a:542 (AGTestSeamCarver.java)
     public Picture picture() {
-        Picture newpic = pic;
-        pic = new Picture(pic);
-        return newpic;
+        return new Picture(pic);
     }
 
     // width of the current picture
