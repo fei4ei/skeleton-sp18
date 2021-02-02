@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class SeamCarver {
-    Picture pic;
+    private Picture pic;
     private double[][] energy;
     private double[][] transposed;
     // Picture tpic;
